@@ -1,0 +1,58 @@
+# ─── Pixel Scan Dashboard — Docker Compose ───────────────────────────────────
+# Usage:
+#   1. cp .env.example .env  →  fill in your values
+#   2. docker compose up -d
+#   3. First run only: docker compose exec counting-stock npm run migrate
+#
+# Services: counting-stock (Node/frontend+backend), db (MySQL 8)
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+  # ── Application (frontend SSR + Express API) ────────────────────────────────
+  counting-stock:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+    container_name: counting-stock
+    image: counting-stock
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-3000}:3000" # Vite SSR / TanStack Start
+      - "${API_PORT:-4005}:4005" # Express API
+    environment:
+      # Database — overridden by .env or docker compose --env-file
+      DB_HOST: ${DB_HOST:-127.0.0.1}
+      DB_PORT: 3306
+      DB_USER: ${DB_USER:-root}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME:-outindb}
+      # API
+      API_PORT: 4005
+      JWT_SECRET: ${JWT_SECRET}
+      API_BASE_URL: ${API_BASE_URL:-http://localhost:3000}
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY}
+      VITE_INTERNAL_API_KEY: ${VITE_INTERNAL_API_KEY}
+      NODE_ENV: production
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://cstock.sugity.co.id}
+    networks:
+      - app-network
+      - nginx-public
+    volumes:
+      # Optional: mount .env at runtime (alternative to env vars above)
+      # - ./.env:/app/.env:ro
+      - app-logs:/app/logs
+
+  # ── Named volumes ─────────────────────────────────────────────────────────────
+volumes:
+  app-logs:
+    driver: local
+
+# ── Network ───────────────────────────────────────────────────────────────────
+networks:
+  nginx-public:
+    external: true
+    name: nginx-public
+  app-network:
+    external: true
+    name: henkaten-be_app-network

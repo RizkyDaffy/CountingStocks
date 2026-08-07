@@ -1,0 +1,189 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-card-elevated: var(--card-elevated);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-pixel-blue: var(--pixel-blue);
+  --color-pixel-blue-soft: var(--pixel-blue-soft);
+  --color-surface-page: var(--surface-page);
+  --color-surface-sidebar: var(--surface-sidebar);
+  --color-surface-section: var(--surface-section);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-surface-hover: var(--surface-hover);
+  --color-border-surface: var(--border-surface);
+  --color-sidebar-hover: var(--sidebar-hover);
+}
+
+:root {
+  --radius: 0.75rem;
+  --background: oklch(0.18 0 0);
+  --foreground: oklch(0.96 0 0);
+  --card: oklch(0.22 0 0);
+  --card-foreground: oklch(0.96 0 0);
+  --card-elevated: oklch(0.26 0 0);
+  --popover: oklch(0.22 0 0);
+  --popover-foreground: oklch(0.96 0 0);
+  --primary: oklch(0.68 0.16 250);
+  --primary-foreground: oklch(0.15 0 0);
+  --secondary: oklch(0.28 0 0);
+  --secondary-foreground: oklch(0.96 0 0);
+  --muted: oklch(0.26 0 0);
+  --muted-foreground: oklch(0.68 0 0);
+  --accent: oklch(0.3 0 0);
+  --accent-foreground: oklch(0.96 0 0);
+  --destructive: oklch(0.62 0.21 25);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.3 0 0);
+  --border-strong: oklch(0.38 0 0);
+  --input: oklch(0.3 0 0);
+  --ring: oklch(0.68 0.16 250);
+  --pixel-blue: oklch(0.68 0.16 250);
+  --pixel-blue-soft: oklch(0.82 0.06 245);
+  --chart-1: oklch(0.68 0.16 250);
+  --chart-2: oklch(0.7 0.12 180);
+  --chart-3: oklch(0.75 0.14 80);
+  --chart-4: oklch(0.65 0.18 320);
+  --chart-5: oklch(0.7 0.16 20);
+  --sidebar: oklch(0.2 0 0);
+  --sidebar-foreground: oklch(0.96 0 0);
+  --sidebar-primary: oklch(0.68 0.16 250);
+  --sidebar-primary-foreground: oklch(0.15 0 0);
+  --sidebar-accent: oklch(0.28 0 0);
+  --sidebar-accent-foreground: oklch(0.96 0 0);
+  --sidebar-border: oklch(0.3 0 0);
+  --sidebar-ring: oklch(0.68 0.16 250);
+  --surface-page: #1f1f1e;
+  --surface-sidebar: #1d1d1c;
+  --surface-section: #1b1b1b;
+  --surface-elevated: #2c2c2a;
+  --surface-hover: #4b4b4b;
+  --border-surface: rgba(255, 255, 255, 0.2);
+  --sidebar-hover: oklch(0.22 0 0);
+}
+
+html.light {
+  --background: oklch(0.97 0.005 80);
+  --foreground: oklch(0.18 0.01 60);
+  --card: oklch(0.99 0.003 80);
+  --card-foreground: oklch(0.18 0.01 60);
+  --card-elevated: oklch(0.95 0.005 80);
+  --popover: oklch(0.99 0.003 80);
+  --popover-foreground: oklch(0.18 0.01 60);
+  --primary: oklch(0.55 0.18 250);
+  --primary-foreground: oklch(0.98 0 0);
+  --secondary: oklch(0.93 0.005 80);
+  --secondary-foreground: oklch(0.22 0.01 60);
+  --muted: oklch(0.94 0.005 80);
+  --muted-foreground: oklch(0.48 0.01 60);
+  --accent: oklch(0.92 0.008 80);
+  --accent-foreground: oklch(0.18 0.01 60);
+  --destructive: oklch(0.55 0.22 25);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.88 0.008 80);
+  --border-strong: oklch(0.82 0.01 80);
+  --input: oklch(0.88 0.008 80);
+  --ring: oklch(0.55 0.18 250);
+  --pixel-blue: oklch(0.55 0.18 250);
+  --pixel-blue-soft: oklch(0.72 0.08 245);
+  --chart-1: oklch(0.55 0.18 250);
+  --chart-2: oklch(0.55 0.14 180);
+  --chart-3: oklch(0.6 0.16 80);
+  --chart-4: oklch(0.52 0.2 320);
+  --chart-5: oklch(0.55 0.18 20);
+  --sidebar: oklch(0.97 0.005 80);
+  --sidebar-foreground: oklch(0.18 0.01 60);
+  --sidebar-primary: oklch(0.55 0.18 250);
+  --sidebar-primary-foreground: oklch(0.98 0 0);
+  --sidebar-accent: oklch(0.93 0.008 80);
+  --sidebar-accent-foreground: oklch(0.18 0.01 60);
+  --sidebar-border: oklch(0.88 0.008 80);
+  --sidebar-ring: oklch(0.55 0.18 250);
+  --surface-page: oklch(0.96 0.005 80);
+  --surface-sidebar: oklch(0.98 0.003 80);
+  --surface-section: oklch(0.99 0.003 80);
+  --surface-elevated: oklch(0.96 0.005 80);
+  --surface-hover: oklch(0.92 0.008 80);
+  --border-surface: oklch(0.88 0.008 80);
+  --sidebar-hover: oklch(0.94 0.005 80);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html,
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family:
+      "Inter",
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      "Segoe UI",
+      Roboto,
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--pixel-blue) 35%, transparent);
+  }
+}
+
+@layer utilities {
+  .transition-smooth {
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hairline {
+    border: 1px solid var(--color-border);
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: var(--color-border-strong);
+    border-radius: 9999px;
+  }
+}
+
+.recharts-text.recharts-cartesian-axis-tick-value {
+  fill: #ffffff !important;
+  font-weight: 300 !important;
+}
