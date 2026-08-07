@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from "react";
+﻿import { useCallback, useState, useEffect } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Download, ExternalLink, QrCode, Search } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
@@ -137,7 +137,6 @@ function AllQrPage() {
             </div>
           </div>
 
-          {/* ── Grid view ────────────────────────────────────────────────── */}
           {view === "grid" ? (
             <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {isLoading
@@ -265,7 +264,6 @@ function AllQrPage() {
               )}
             </div>
           ) : (
-            /* ── List view ───────────────────────────────────────────────── */
             <div className="mt-6 -mx-2 overflow-x-auto px-2 scrollbar-thin">
               <table className="w-full min-w-[720px] border-separate border-spacing-0 text-left text-sm">
                 <thead>

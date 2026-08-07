@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+﻿import { useState, useMemo, useCallback } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   Smartphone,
@@ -782,7 +782,6 @@ function DevicesPage() {
           </div>
         </div>
 
-        {/* ── Toolbar ────────────────────────────────────────────────────── */}
         <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           {/* Search */}
           <div className="relative w-full sm:max-w-sm">
@@ -837,7 +836,6 @@ function DevicesPage() {
           </div>
         </div>
 
-        {/* ── Content ──────────────────────────────────────────────────────── */}
         {isLoading ? (
           <div className="py-20 text-center text-sm text-muted-foreground">
             <Loader2 className="h-6 w-6 animate-spin mx-auto mb-3 text-primary" />
@@ -850,14 +848,12 @@ function DevicesPage() {
               : "Belum ada perangkat terdaftar."}
           </div>
         ) : view === "grid" ? (
-          /* ── GRID VIEW - ORIGINAL CODE UNTOUCHED ────────────────────── */
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {filtered.map((d) => (
               <DeviceCard key={d.id} d={d} onDelete={handleDelete} onEdit={setEditingDevice} />
             ))}
           </div>
         ) : (
-          /* ── LIST VIEW ───────────────────────────────────────────────── */
           <DeviceListView devices={filtered} onDelete={handleDelete} onEdit={setEditingDevice} />
         )}
       </div>

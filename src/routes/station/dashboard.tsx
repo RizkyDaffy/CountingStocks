@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+﻿import { useState, useCallback, useEffect, useRef } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import {
@@ -273,7 +273,6 @@ function StationDashboardPage() {
             // readOnly during cooldown keeps focus + prevents keyboard pop on mobile
             readOnly={cooldown}
           />
-          {/* ── Cooldown overlay (additive) ─────────────────────────────── */}
           {cooldown && (
             <div
               className="absolute inset-0 flex items-center justify-center gap-2 rounded-2xl pointer-events-none"

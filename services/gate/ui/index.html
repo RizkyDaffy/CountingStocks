@@ -1103,8 +1103,6 @@
         el.innerHTML = `<div class="alert alert-error">❌ ${msg}</div>`;
         el.style.display = "block";
       }
-
-      // ─── API Helper (RELATIVE URLS — proxied by gate service) ───────────────────
       async function apiFetch(path, opts = {}) {
         const res = await fetch(path, {
           ...opts,
@@ -1119,7 +1117,6 @@
         return json;
       }
 
-      // ─── Server status check ─────────────────────────────────────────────────────
       async function checkServerStatus() {
         try {
           await apiFetch("/api/health");
@@ -1131,7 +1128,6 @@
         }
       }
 
-      // ─── Tabs ────────────────────────────────────────────────────────────────────
       function switchTab(name) {
         ["devices", "provision", "privileges", "firmware", "log"].forEach((t) => {
           document.getElementById("tab-content-" + t).style.display = t === name ? "" : "none";
@@ -1141,7 +1137,6 @@
         if (name === "log") loadLog();
       }
 
-      // ─── Token Generator ─────────────────────────────────────────────────────────
       function generateToken() {
         const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         const arr = new Uint8Array(32);
@@ -1152,7 +1147,6 @@
         updateFwPreview();
       }
 
-      // ─── DEVICES TAB ─────────────────────────────────────────────────────────────
       async function loadDevices() {
         const tbody = document.getElementById("deviceTableBody");
         try {
@@ -1273,7 +1267,6 @@
         }
       }
 
-      // ─── PROVISIONING USB TAB (WEBSERIAL) ─────────────────────────────────────────
       let serialPort = null;
 
       async function loadQrsForProvisioning() {
@@ -1391,7 +1384,6 @@
         }
       }
 
-      // ─── USB WEBSERIAL PROVISIONING ──────────────────────────────────────────────
       let serialPort = null;
 
       async function loadQrsForProvisioning() {
@@ -1535,7 +1527,6 @@
         }
       }
 
-      // ─── PRIVILEGES TAB ──────────────────────────────────────────────────────────
       function populateDeviceSelect() {
         const sel = document.getElementById("priv_device_select");
         const cur = sel.value;
@@ -1628,12 +1619,11 @@
         }
       }
 
-      // ─── FIRMWARE PREVIEW ─────────────────────────────────────────────────────────
       function updateFwPreview() {
         const relay = document.getElementById("fw_relay_pin")?.value || "26";
         const dur = document.getElementById("fw_duration")?.value || "3000";
         document.getElementById("fwPreview").innerHTML =
-          `<span class="fw-comment">// ─── HARDWARE CONSTANTS (sama untuk semua unit) ───────────\n` +
+          `<span class="fw-comment">// HARDWARE CONSTANTS (sama untuk semua unit)\n` +
           `// Hanya dua nilai ini yang perlu dipertimbangkan jika hardware berbeda.</span>\n\n` +
           `<span class="fw-define">#define</span> <span class="fw-key">RELAY_PIN</span>              <span class="fw-string">${relay}</span>    <span class="fw-comment">// GPIO → relay IN</span>\n` +
           `<span class="fw-define">#define</span> <span class="fw-key">GATE_OPEN_DURATION_MS</span>  <span class="fw-string">${dur}</span>  <span class="fw-comment">// ms pintu terbuka (default)</span>\n` +
@@ -1652,7 +1642,6 @@
           .catch(() => toast("Gagal salin", "err"));
       }
 
-      // ─── LOG TAB ─────────────────────────────────────────────────────────────────
       async function loadLog() {
         const filter = document.getElementById("log_device_filter").value.trim();
         const tbody = document.getElementById("logTableBody");
@@ -1692,7 +1681,6 @@
         }
       }
 
-      // ─── Helpers ──────────────────────────────────────────────────────────────────
       function esc(s) {
         return String(s ?? "")
           .replace(/&/g, "&amp;")
@@ -1722,7 +1710,6 @@
         setTimeout(() => el.remove(), 4000);
       }
 
-      // ─── Init ─────────────────────────────────────────────────────────────────────
       window.addEventListener("load", () => {
         const saved = sessionStorage.getItem("gateAdminToken");
         if (saved) document.getElementById("authToken").value = saved;

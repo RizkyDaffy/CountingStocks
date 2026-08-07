@@ -309,7 +309,7 @@ function TvPage() {
   const slotAData = activeSlot === "A" ? getPageData(currentPage) : getPageData(nextPage);
   const slotBData = activeSlot === "B" ? getPageData(currentPage) : getPageData(nextPage);
 
-   ── Auto-cycle timer (additive, does NOT modify existing useEffects) ───────
+   
   useEffect(() => {
     if (totalPages <= 1) return;
     const timer = setInterval(() => {
@@ -569,7 +569,6 @@ function TvPage() {
 
             {priorityData.length > 0 ? (
               <>
-                {/* ── Cycle progress bar - only when multi-page ─────────── */}
                 {totalPages > 1 && (
                   <div className="tv-priority-progress">
                     <div
@@ -580,7 +579,6 @@ function TvPage() {
                   </div>
                 )}
 
-                {/* ── A/B crossfade slot wrapper ────────────────────────── */}
                 <div style={{ position: "relative" }}>
                   {/* SLOT A */}
                   <div
@@ -694,7 +692,6 @@ function TvPage() {
                 </div>
                 {/* end A/B wrapper */}
 
-                {/* ── Page indicator dots - only when multi-page ────────── */}
                 {totalPages > 1 && (
                   <div
                     style={{

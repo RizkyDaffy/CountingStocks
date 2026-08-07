@@ -1,14 +1,11 @@
-# ─── Pixel Scan Dashboard — Docker Compose ───────────────────────────────────
-# Usage:
+﻿# Usage:
 #   1. cp .env.example .env  →  fill in your values
 #   2. docker compose up -d
 #   3. First run only: docker compose exec counting-stock npm run migrate
 #
 # Services: counting-stock (Node/frontend+backend), db (MySQL 8)
-# ─────────────────────────────────────────────────────────────────────────────
 
 services:
-  # ── Application (frontend SSR + Express API) ────────────────────────────────
   counting-stock:
     build:
       context: .
@@ -43,12 +40,10 @@ services:
       # - ./.env:/app/.env:ro
       - app-logs:/app/logs
 
-  # ── Named volumes ─────────────────────────────────────────────────────────────
 volumes:
   app-logs:
     driver: local
 
-# ── Network ───────────────────────────────────────────────────────────────────
 networks:
   nginx-public:
     external: true

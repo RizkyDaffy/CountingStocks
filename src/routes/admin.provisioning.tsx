@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+﻿import { useState, useEffect, useCallback } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   ShieldCheck,
@@ -490,7 +490,6 @@ function ProvisioningPage() {
             </div>
           </div>
 
-          {/* ── Column 3: Serial Settings ───────────────────────────────────── */}
           <div className="flex flex-col gap-4">
             <div className="rounded-2xl border border-border-surface bg-surface-section p-5">
               <h2 className="text-sm font-semibold flex items-center gap-2 mb-4">

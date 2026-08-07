@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Boxes, LayoutGrid } from "lucide-react";
 
 export type WorkspaceMode = "inventaris" | "material";
@@ -84,7 +84,6 @@ export function WorkspaceSwitcher({ value, onChange, collapsed = false }: Worksp
           "shadow-[inset_0_1px_2px_rgba(0,0,0,0.18)]",
         ].join(" ")}
       >
-        {/* ── Sliding background pill ───────────────────────────────────── */}
         <span
           aria-hidden="true"
           className={[
@@ -104,7 +103,6 @@ export function WorkspaceSwitcher({ value, onChange, collapsed = false }: Worksp
           }}
         />
 
-        {/* ── Tab buttons ───────────────────────────────────────────────── */}
         {WORKSPACES.map(({ id, label, icon: Icon }, idx) => {
           const isActive = active === id;
           return (

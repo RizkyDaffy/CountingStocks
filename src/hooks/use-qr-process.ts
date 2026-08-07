@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+﻿import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchApi } from "@/lib/api";
 
 export type ProcessQrResult = {
@@ -61,7 +61,6 @@ export function useQrInfo(token: string | null) {
   });
 }
 
-// ── QR Scan history - auto-refresh every 5s ──────────────────────────────
 export function useQrHistory() {
   return useQuery({
     queryKey: ["qr-history"],
