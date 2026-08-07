@@ -367,7 +367,6 @@ function ScanPage() {
               ))}
             </div>
 
-            {/* ── Scan Action Mode toggle ── */}
             <div className="mb-4 flex items-center gap-2">
               <span className="shrink-0 text-[11.5px] text-muted-foreground">Action:</span>
               <div className="flex flex-1 gap-1.5 rounded-xl bg-card-elevated p-1">
@@ -420,7 +419,6 @@ function ScanPage() {
               </span>
             </div>
 
-            {/* ── LIVE CAMERA ── */}
             {mode === "live" && (
               <>
                 <div className="flex items-center justify-between mb-3">
@@ -516,7 +514,6 @@ function ScanPage() {
               </>
             )}
 
-            {/* ── FILE CAPTURE ── */}
             {mode === "file" && (
               <div className="flex flex-col gap-4">
                 <div className="rounded-2xl border border-dashed border-border-strong bg-card-elevated/30 p-6 text-center">
@@ -566,7 +563,6 @@ function ScanPage() {
               </div>
             )}
 
-            {/* ── PASTE URL ── */}
             {mode === "url" && (
               <div className="flex flex-col gap-4">
                 <div className="rounded-2xl border border-dashed border-border-strong bg-card-elevated/30 p-5">
@@ -601,7 +597,6 @@ function ScanPage() {
               </div>
             )}
 
-            {/* ── Scan Result - shared across all modes ── */}
             {(isProcessing || scanResult || scanError) && (
               <div className="mt-4">
                 {isProcessing && (

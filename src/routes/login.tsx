@@ -56,7 +56,6 @@ function LoginPage() {
       {/* spacer top */}
       <div />
 
-      {/* ── Card ── */}
       <div
         className="w-full max-w-md rounded-2xl shadow-sm p-8 sm:p-10"
         style={{ backgroundColor: "var(--login-card, #FFFFFF)" }}
@@ -176,7 +175,6 @@ function LoginPage() {
         </form>
       </div>
 
-      {/* ── Footer ── */}
       <p className="text-xs text-center" style={{ color: "var(--login-footer, #9CA3AF)" }}>
         Copyright @2026 Sugity Integrated Systems
       </p>
