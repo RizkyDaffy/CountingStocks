@@ -37,11 +37,11 @@ export default (env: ConfigEnv) => {
       // Docker / Node SSR builds skip this so TanStack Start emits a Node server.
       ...(command === "build" && process.env.BUILD_TARGET === "cloudflare"
         ? [
-            (async () => {
-              const { cloudflare } = await import("@cloudflare/vite-plugin");
-              return cloudflare({ viteEnvironment: { name: "ssr" } });
-            })(),
-          ]
+          (async () => {
+            const { cloudflare } = await import("@cloudflare/vite-plugin");
+            return cloudflare({ viteEnvironment: { name: "ssr" } });
+          })(),
+        ]
         : []),
     ],
 
@@ -49,7 +49,7 @@ export default (env: ConfigEnv) => {
       allowedHosts: true,
       proxy: {
         "/api": {
-          target: "http://localhost:4005",
+          target: "http://localhost:4000",
           changeOrigin: true,
           secure: false,
         },

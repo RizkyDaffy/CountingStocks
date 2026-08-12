@@ -46,7 +46,7 @@ Preferences geetoSettei;
 String setteiWifiSsid;
 String setteiWifiPasu;
 String setteiSaabaaIp;
-int    setteiSaabaaPooto = 4005;
+int    setteiSaabaaPooto = 4000;
 String setteiMashinKoodo;
 String setteiUebbuhukkuPasu;
 bool   geetoSetteiYomikomiZumi = false;
@@ -102,7 +102,7 @@ bool geetoSetteiYomikomi() {
   setteiWifiSsid    = geetoSettei.getString("ssid", "");
   setteiWifiPasu    = geetoSettei.getString("pass", "");
   setteiSaabaaIp    = geetoSettei.getString("srvip", "");
-  setteiSaabaaPooto = geetoSettei.getInt("srvport", 4005);
+  setteiSaabaaPooto = geetoSettei.getInt("srvport", 4000);
   setteiMashinKoodo = geetoSettei.getString("mc", "");
   setteiUebbuhukkuPasu = geetoSettei.getString("hook", "");
   jushinQrKaiseki(geetoSettei.getString("qrs", ""));
@@ -144,7 +144,7 @@ void shiriaruSetteiJikkou() {
       geetoSettei.putString("ssid",    doc["wifi_ssid"]    | "");
       geetoSettei.putString("pass",    doc["wifi_pass"]    | "");
       geetoSettei.putString("srvip",   doc["server_ip"]    | "");
-      geetoSettei.putInt("srvport",    doc["port"]          | 4005);
+      geetoSettei.putInt("srvport",    doc["port"]          | 4000);
       geetoSettei.putString("mc",      doc["machine_code"] | "");
       geetoSettei.putString("hook",    doc["webhook_path"] | "");
       geetoSettei.putString("qrs",     ketsugouQr);
@@ -390,7 +390,7 @@ void loop() {
         geetoSettei.putString("ssid",    doc["wifi_ssid"]    | "");
         geetoSettei.putString("pass",    doc["wifi_pass"]    | "");
         geetoSettei.putString("srvip",   doc["server_ip"]    | "");
-        geetoSettei.putInt("srvport",    doc["port"]          | 4005);
+        geetoSettei.putInt("srvport",    doc["port"]          | 4000);
         geetoSettei.putString("mc",      doc["machine_code"] | "");
         geetoSettei.putString("hook",    doc["webhook_path"] | "");
         geetoSettei.putString("qrs",     ketsugouQr2);

@@ -16,7 +16,7 @@ services:
     restart: unless-stopped
     ports:
       - "${APP_PORT:-3000}:3000" # Vite SSR / TanStack Start
-      - "${API_PORT:-4005}:4005" # Express API
+      - "${API_PORT:-4000}:4000" # Express API
     environment:
       # Database — overridden by .env or docker compose --env-file
       DB_HOST: ${DB_HOST:-127.0.0.1}
@@ -25,7 +25,7 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME:-outindb}
       # API
-      API_PORT: 4005
+      API_PORT: 4000
       JWT_SECRET: ${JWT_SECRET}
       API_BASE_URL: ${API_BASE_URL:-http://localhost:3000}
       INTERNAL_API_KEY: ${INTERNAL_API_KEY}

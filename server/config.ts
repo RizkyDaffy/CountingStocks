@@ -15,7 +15,7 @@ function optionalEnv(key: string, fallback = ""): string {
 export const config = {
   JWT_SECRET: requireEnv("JWT_SECRET"),
   INTERNAL_API_KEY: optionalEnv("INTERNAL_API_KEY"),
-  API_PORT: Number(optionalEnv("API_PORT", "4005")),
+  API_PORT: Number(optionalEnv("API_PORT", "4000")),
   NODE_ENV: optionalEnv("NODE_ENV", "development"),
   ALLOWED_ORIGINS: optionalEnv("ALLOWED_ORIGINS", ""),
   DB: {

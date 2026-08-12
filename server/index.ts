@@ -29,7 +29,7 @@ import type { RowDataPacket } from "mysql2";
 dotenv.config();
 
 const app = express();
-const PORT = Number(process.env.API_PORT) || 4005;
+const PORT = Number(process.env.API_PORT) || 4000;
 
 app.use(securityHeaders);
 app.use(configuredCors);
@@ -161,7 +161,7 @@ function gracefulShutdown(signal: string) {
       console.log(
         JSON.stringify({ timestamp: new Date().toISOString(), event: "shutdown_complete" }),
       );
-    } catch {}
+    } catch { }
     process.exit(0);
   });
   setTimeout(() => process.exit(1), 10_000).unref();

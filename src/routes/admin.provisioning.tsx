@@ -112,7 +112,7 @@ function ProvisioningPage() {
 
   const showToast = (msg: string, type: "success" | "error" | "info") => {
     setToast({ msg, type });
-    setTimeout(() => setToast(null), 4005);
+    setTimeout(() => setToast(null), 4000);
   };
 
   useEffect(() => {
@@ -238,7 +238,7 @@ function ProvisioningPage() {
       wifi_ssid: ssid,
       wifi_pass: pass,
       server_ip: serverIp,
-      port: Number(import.meta.env.VITE_API_PORT) || 4005,
+      port: Number(import.meta.env.VITE_API_PORT) || 4000,
       machine_code: mcNormalized,
       listen_qrs: listenQrsArr,
       webhook_path: webhookPath,
@@ -353,11 +353,10 @@ function ProvisioningPage() {
                     <button
                       key={m.id}
                       onClick={() => selectMachine(m)}
-                      className={`w-full text-left rounded-xl px-4 py-3 text-sm transition-smooth border ${
-                        selectedMachine?.id === m.id
+                      className={`w-full text-left rounded-xl px-4 py-3 text-sm transition-smooth border ${selectedMachine?.id === m.id
                           ? "bg-[#C05C30]/20 border-[#C05C30]/50"
                           : "bg-card hover:bg-card-elevated border-border-surface"
-                      }`}
+                        }`}
                     >
                       <div className="flex justify-between items-center">
                         <div>
@@ -439,11 +438,10 @@ function ProvisioningPage() {
                         <button
                           key={q.id}
                           onClick={() => toggleQr(q.qr_id)}
-                          className={`w-full text-left rounded-xl px-4 py-3 text-sm transition-smooth border ${
-                            selectedQrs.has(q.qr_id)
+                          className={`w-full text-left rounded-xl px-4 py-3 text-sm transition-smooth border ${selectedQrs.has(q.qr_id)
                               ? "bg-[#C05C30]/20 border-[#C05C30]/50"
                               : "bg-card hover:bg-card-elevated border-border-surface"
-                          }`}
+                            }`}
                         >
                           <div className="flex justify-between items-center">
                             <div>
@@ -468,13 +466,12 @@ function ProvisioningPage() {
 
             {/* Live webhook preview */}
             <div
-              className={`rounded-xl border px-4 py-3 text-xs font-mono flex items-center gap-2 ${
-                webhookPreview !== "—"
+              className={`rounded-xl border px-4 py-3 text-xs font-mono flex items-center gap-2 ${webhookPreview !== "—"
                   ? isWebhookQrScoped
                     ? "border-emerald-500/30 bg-emerald-500/5 text-emerald-400"
                     : "border-amber-500/30 bg-amber-500/5 text-amber-400"
                   : "border-border-surface bg-surface-section text-muted-foreground"
-              }`}
+                }`}
             >
               <Link2 className="h-3.5 w-3.5 shrink-0" />
               <span className="flex-1 truncate">
@@ -502,11 +499,10 @@ function ProvisioningPage() {
                   id="connect-esp32-btn"
                   onClick={connectSerial}
                   disabled={isConnected}
-                  className={`flex-1 rounded-xl py-2.5 text-sm font-semibold transition-smooth ${
-                    isConnected
+                  className={`flex-1 rounded-xl py-2.5 text-sm font-semibold transition-smooth ${isConnected
                       ? "bg-emerald-500/20 text-emerald-400 cursor-not-allowed"
                       : "bg-[#C05C30] text-white hover:bg-[#A04A26]"
-                  }`}
+                    }`}
                 >
                   {isConnected ? "Terhubung" : "Connect ESP32"}
                 </button>
@@ -558,7 +554,7 @@ function ProvisioningPage() {
                   />
                   <p className="text-[10px] text-muted-foreground mt-1">
                     IP komputer yang menjalankan API Server (port{" "}
-                    {import.meta.env.VITE_API_PORT || 4005}).
+                    {import.meta.env.VITE_API_PORT || 4000}).
                   </p>
                 </div>
 

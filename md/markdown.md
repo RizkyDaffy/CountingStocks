@@ -7,7 +7,7 @@ This document consolidates all essential developer context, hardware workflow sp
 ## 1. System Architecture & @betogate Microservices
 
 ### Dual-Server Architecture
-- **Main Backend (`server/index.ts`)**: Runs on Express (port configurable via `API_PORT`, default `4005`). Handles authentication, database queries, business logic, and core API routing.
+- **Main Backend (`server/index.ts`)**: Runs on Express (port configurable via `API_PORT`, default `4000`). Handles authentication, database queries, business logic, and core API routing.
 - **Gate Microservice (`services/gate/server.ts`)**: A self-contained, additive Node.js microservice managing hardware communication. It operates two servers concurrently:
   1. **TCP Server (Port `4000` / `GATE_TCP_PORT`)**: Accepts persistent socket connections from field ESP32 units. Uses a 30s server-side keepalive ping and 90s dead-device assumption window.
   2. **HTTP API Server (Port `4001` / `GATE_HTTP_PORT`)**: Accepts internal command dispatches from the main backend and serves the Admin UI on `0.0.0.0` across all interfaces.

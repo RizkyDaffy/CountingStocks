@@ -12,7 +12,7 @@ const CLIENT_DIR = resolve(__dirname, "..", "dist", "client");
 const PORT = Number(process.env.PORT || 3000);
 const HOST = process.env.HOST || "0.0.0.0";
 const API_TARGET_HOST = process.env.API_PROXY_HOST || "127.0.0.1";
-const API_TARGET_PORT = Number(process.env.API_PORT || 4005);
+const API_TARGET_PORT = Number(process.env.API_PORT || 4000);
 
 const MIME = {
   ".js": "application/javascript; charset=utf-8",

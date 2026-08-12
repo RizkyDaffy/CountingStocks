@@ -163,7 +163,7 @@ This shows everything currently in the in-memory map. If it's empty, nothing has
 **Step 3 — Manually fire the signal for testing** (requires internal key):
 
 ```bash
-curl -X POST http://localhost:4005/iot/set/mc2/QR-1004 \
+curl -X POST http://localhost:4000/iot/set/mc2/QR-1004 \
   -H "x-internal-key: YOUR_INTERNAL_KEY"
 ```
 
@@ -235,7 +235,7 @@ The server **literally logs the exact key it set** every single scan. Look at yo
 That value after `iotPath:` is the **exact and only** string you paste into the browser:
 
 ```
-GET http://localhost:4005/iot/mc2/QR-1004
+GET http://localhost:4000/iot/mc2/QR-1004
                                 ↑
                          copy-paste from the log
 ```
@@ -248,7 +248,7 @@ No guessing. The server told you. You just need to look at the terminal.
 
 ```bash
 # Replace YOUR_KEY with the value of INTERNAL_KEY in your .env
-curl http://localhost:4005/iot/debug \
+curl http://localhost:4000/iot/debug \
   -H "x-internal-key: YOUR_KEY"
 ```
 
