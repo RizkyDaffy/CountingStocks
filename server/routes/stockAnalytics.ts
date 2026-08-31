@@ -9,7 +9,7 @@ const router = Router();
 function rowToPayload(row: RowDataPacket) {
   return {
     id: row.id,
-    machine: row.machine,
+    machine: row.mc,
     model: row.model,
     partNumber: row.part_number,
     partName: row.part_name,
