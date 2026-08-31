@@ -7,7 +7,6 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "baseUrl": "./",
-    "ignoreDeprecations": "6.0",
     "declaration": true,
     "removeComments": false,
     "emitDecoratorMetadata": true,

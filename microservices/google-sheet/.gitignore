@@ -3,4 +3,8 @@ dist
 .env
 .env.*
 !.env.example
+credentials.json
+*-credentials.json
+*.pem
+*.key
 *.log
