@@ -31,8 +31,8 @@ COPY --from=builder /app/dist ./dist
 # tsx is listed as a devDep so we need it explicitly — copy from builder
 COPY --from=builder /app/node_modules/.bin/tsx /usr/local/bin/tsx
 COPY --from=builder /app/node_modules/tsx ./node_modules/tsx
-COPY server ./server
-COPY services ./services
+COPY microservices/server ./microservices/server
+COPY microservices/services ./microservices/services
 
 # Copy the process manager that boots both servers
 COPY guardian.js ./guardian.js

@@ -6,9 +6,9 @@ import { existsSync } from "fs";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const APP_DIR = __dirname;
 const IS_PROD = process.env.NODE_ENV === "production";
-const BACKEND_SRC = resolve(APP_DIR, "server", "index.ts");
+const BACKEND_SRC = resolve(APP_DIR, "microservices", "server", "index.ts");
 const FRONTEND_DIST = resolve(APP_DIR, "dist", "server", "assets", "worker-entry-*.js");
-const SSR_ENTRY = resolve(APP_DIR, "server", "ssr-node.mjs");
+const SSR_ENTRY = resolve(APP_DIR, "microservices", "server", "ssr-node.mjs");
 const SSR_BUILD = resolve(APP_DIR, "dist", "server", "server.js");
 
 function isHttpAccessLog(line) {

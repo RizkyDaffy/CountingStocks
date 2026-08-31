@@ -45,7 +45,12 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
 
   try {
     const decoded = jwt.verify(token, SECRET_KEY);
-    req.user = decoded;
+
+    if (typeof decoded === "string" || !decoded || typeof decoded !== "object") {
+      return res.status(403).json({ success: false, error: "Forbidden: Invalid or expired token" });
+    }
+
+    req.user = decoded as JwtPayload;
     next();
   } catch (err) {
     return res.status(403).json({ success: false, error: "Forbidden: Invalid or expired token" });

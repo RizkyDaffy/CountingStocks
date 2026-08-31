@@ -60,6 +60,12 @@ router.post("/login", async (req, res) => {
       },
     });
   } catch (err: unknown) {
+    const e = err as { code?: string };
+    if (e?.code === "ECONNREFUSED" || e?.code === "PROTOCOL_CONNECTION_LOST") {
+      return res
+        .status(503)
+        .json({ success: false, error: "Database tidak terjangkau. Cek koneksi MySQL/MariaDB." });
+    }
     res.status(500).json({ success: false, error: (err as Error).message });
   }
 });

@@ -11,10 +11,10 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "server": "tsx server/index.ts",
-    "migrate": "tsx server/migrate.ts",
-    "migrate:big-update": "tsx server/migrate-big-update.ts",
-    "migrate:v2": "tsx server/migrate-v2.ts",
+    "server": "tsx microservices/server/index.ts",
+    "migrate": "tsx microservices/server/migrate.ts",
+    "migrate:big-update": "tsx microservices/server/migrate-big-update.ts",
+    "migrate:v2": "tsx microservices/server/migrate-v2.ts",
     "setup:iris": "git clone --depth 1 --sparse https://github.com/RizkyDaffy/IRIS.git .iris-tmp && cd .iris-tmp && git sparse-checkout set SDK/JS && cd .. && npm install ./.iris-tmp/SDK/JS --install-links --legacy-peer-deps"
   },
   "dependencies": {
