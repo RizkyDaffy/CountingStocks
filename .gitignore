@@ -28,6 +28,12 @@ markdown.md
 # Secrets
 .env
 .env*
+# Service account keys / credentials
+brain/
+**/credentials.json
+*-credentials.json
+*.pem
+*.key
 
 # Docker build artifacts (keep compose + Dockerfile tracked, not cache)
 .dockerignore
