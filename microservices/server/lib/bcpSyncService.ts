@@ -35,10 +35,8 @@ type SheetSnapshot = {
 let isSyncing = false;
 
 /**
- * Extract stock from Google Sheet row by finding the latest day pair.
+ * Extract stock from Google Sheet row by taking the latest non-empty numeric value.
  * In the sheet, data starts at column index 3 (after Machine, Part Name, Model Part).
- * Each day has 2 columns: Pagi (Siang) and Malam.
- * Day index formula: pairStart = 3 + Math.floor((latestCol - 3) / 2) * 2
  */
 export function extractStock(rawValues: string[][], rowKey: string): number | null {
   const normalise = (s: string) => s.trim().toUpperCase().replace(/\s+/g, " ");
@@ -49,29 +47,17 @@ export function extractStock(rawValues: string[][], rowKey: string): number | nu
     if (normalise(row[1] ?? "") !== target) continue;
 
     // Find the rightmost column >= 3 that has a non-empty numeric value
-    let latestFilledCol = -1;
     for (let i = row.length - 1; i >= 3; i--) {
       const cell = (row[i] ?? "").replace(/[,\s]/g, "");
       if (cell !== "" && !isNaN(parseFloat(cell))) {
-        latestFilledCol = i;
-        break;
+        return parseFloat(cell);
       }
     }
 
-    if (latestFilledCol < 3) return 0; // No data entered yet
-
-    // Determine the 2-column shift pair for that date
-    const pairStart = 3 + Math.floor((latestFilledCol - 3) / 2) * 2;
-    const pagiCell = (row[pairStart] ?? "").replace(/[,\s]/g, "");
-    const malamCell = (row[pairStart + 1] ?? "").replace(/[,\s]/g, "");
-
-    const pagi = pagiCell !== "" && !isNaN(parseFloat(pagiCell)) ? parseFloat(pagiCell) : 0;
-    const malam = malamCell !== "" && !isNaN(parseFloat(malamCell)) ? parseFloat(malamCell) : 0;
-
-    return pagi + malam;
+    return 0; // Row matched but no numeric data entered yet
   }
 
-  return null; // row not found in sheet
+  return null; // Row not found in sheet
 }
 
 async function fetchSheet(sheetKey: string): Promise<SheetSnapshot | null> {
