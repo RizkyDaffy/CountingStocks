@@ -24,6 +24,7 @@ import { Route as DevicesRouteImport } from './routes/devices'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CustomerRouteImport } from './routes/customer'
 import { Route as CategoryRouteImport } from './routes/category'
+import { Route as BackupRouteImport } from './routes/backup'
 import { Route as AllQrRouteImport } from './routes/all-qr'
 import { Route as SplatRouteImport } from './routes/$'
 import { Route as IndexRouteImport } from './routes/index'
@@ -112,6 +113,11 @@ const CategoryRoute = CategoryRouteImport.update({
   path: '/category',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BackupRoute = BackupRouteImport.update({
+  id: '/backup',
+  path: '/backup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AllQrRoute = AllQrRouteImport.update({
   id: '/all-qr',
   path: '/all-qr',
@@ -177,6 +183,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/all-qr': typeof AllQrRoute
+  '/backup': typeof BackupRoute
   '/category': typeof CategoryRoute
   '/customer': typeof CustomerRoute
   '/dashboard': typeof DashboardRoute
@@ -206,6 +213,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/all-qr': typeof AllQrRoute
+  '/backup': typeof BackupRoute
   '/category': typeof CategoryRoute
   '/customer': typeof CustomerRoute
   '/dashboard': typeof DashboardRoute
@@ -236,6 +244,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/all-qr': typeof AllQrRoute
+  '/backup': typeof BackupRoute
   '/category': typeof CategoryRoute
   '/customer': typeof CustomerRoute
   '/dashboard': typeof DashboardRoute
@@ -267,6 +276,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/all-qr'
+    | '/backup'
     | '/category'
     | '/customer'
     | '/dashboard'
@@ -296,6 +306,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/all-qr'
+    | '/backup'
     | '/category'
     | '/customer'
     | '/dashboard'
@@ -325,6 +336,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/all-qr'
+    | '/backup'
     | '/category'
     | '/customer'
     | '/dashboard'
@@ -355,6 +367,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SplatRoute: typeof SplatRoute
   AllQrRoute: typeof AllQrRoute
+  BackupRoute: typeof BackupRoute
   CategoryRoute: typeof CategoryRoute
   CustomerRoute: typeof CustomerRoute
   DashboardRoute: typeof DashboardRoute
@@ -488,6 +501,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CategoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/backup': {
+      id: '/backup'
+      path: '/backup'
+      fullPath: '/backup'
+      preLoaderRoute: typeof BackupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/all-qr': {
       id: '/all-qr'
       path: '/all-qr'
@@ -579,6 +599,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SplatRoute: SplatRoute,
   AllQrRoute: AllQrRoute,
+  BackupRoute: BackupRoute,
   CategoryRoute: CategoryRoute,
   CustomerRoute: CustomerRoute,
   DashboardRoute: DashboardRoute,

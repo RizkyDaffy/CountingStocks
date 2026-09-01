@@ -7,6 +7,7 @@ export type StockRow = {
   qr_id: string;
   part_name: string;
   factory: string;
+  machine?: string | null;
   unit_value: number;
   current_stock: number;
   trend: "up" | "down" | "none";

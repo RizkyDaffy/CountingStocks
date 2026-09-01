@@ -229,7 +229,10 @@ function StockCard({ row }: { row: StockRow }) {
               {row.qr_id}
             </span>
           </div>
-          <div className="mt-0.5 text-xs text-muted-foreground">{row.factory} - {row.machine}</div>
+          <div className="mt-0.5 text-xs text-muted-foreground">
+            {row.factory}
+            {row.machine ? ` - ${row.machine}` : ""}
+          </div>
         </div>
 
         { }

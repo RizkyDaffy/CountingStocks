@@ -20,6 +20,7 @@ import {
   ShieldCheck,
   Monitor,
   Cpu,
+  ShieldAlert,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -105,6 +106,12 @@ export const MANAGEMENT_ITEMS: NavItem[] = [
     description: "Provisioning Mesin dengan IoT - ESP32",
     to: "/admin/provisioning",
     icon: Cpu,
+  },
+  {
+    label: "Business Continuity Plan",
+    description: "Koneksi Google Sheet untuk Backup Stock",
+    to: "/backup",
+    icon: ShieldAlert,
   },
 ];
 

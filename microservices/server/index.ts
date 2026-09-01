@@ -16,6 +16,8 @@ import factoriesRoutes from "./routes/factories.js";
 import privilegesRoutes from "./routes/privileges.js";
 import stockAnalyticsRoutes from "./routes/stockAnalytics.js";
 import teiteiRoutes from "./routes/teitei.js";
+import bcpRoutes from "./routes/bcp.js";
+import { startBcpSync } from "./lib/bcpSyncService.js";
 
 import iotStateRoutes from "./routes/iotState.js";
 import { requireAuth } from "./middleware/authMiddleware.js";
@@ -143,14 +145,18 @@ app.use("/api/factories", factoriesRoutes);
 app.use("/api/privileges", privilegesRoutes);
 app.use("/api/stock-analytics", stockAnalyticsRoutes);
 app.use("/api/teitei", teiteiRoutes);
+app.use("/api/bcp", bcpRoutes);
+
+// Start background Google Sheet → stock sync for BCP-linked parts
+startBcpSync();
 
 app.use(notFoundHandler);
 
 app.use(globalErrorHandler);
 
 const server = app.listen(PORT, async () => {
-  console.log(`🚀 API server berajalan di http://localhost:${PORT}`);
-  console.log(`   check kesehata nyah: http://localhost:${PORT}/api/health`);
+  console.log(`🚀 API server berjalan di http://localhost:${PORT}`);
+  console.log(`   cek kesehatannya: http://localhost:${PORT}/api/health`);
 });
 
 function gracefulShutdown(signal: string) {
