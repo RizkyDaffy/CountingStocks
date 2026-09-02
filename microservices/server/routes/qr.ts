@@ -584,6 +584,7 @@ router.post("/process", async (req, res) => {
         const normalizedQrId = qrId.toUpperCase();
         const iotPath = `/webhook/${mc}/${normalizedQrId}`;
         const iotPathRaw = `/webhook/${machineOriginForWebhook}/${factoryOrigin}/${normalizedQrId}`;
+        setIotScanned(iotPath, 10_000);
         setIotScanned(iotPathRaw, 10_000);
         triggerMachineWebhook({ machine_code: machineOriginForWebhook, qr_code_id: qrId });
       } else {

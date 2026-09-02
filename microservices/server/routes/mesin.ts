@@ -1,8 +1,13 @@
 import { Router } from "express";
+import crypto from "crypto";
 import pool from "../db.js";
 import type { RowDataPacket, ResultSetHeader } from "mysql2";
 
 const router = Router();
+
+function generateUuid(): string {
+  return crypto.randomUUID();
+}
 
 router.get("/", async (req, res) => {
   try {
@@ -29,10 +34,13 @@ router.post("/", async (req, res) => {
     const {
       machineCode,
       machineName,
-      description = "",
-      status = "active",
-      factory = "",
+      machineDesc = "",
+      machineStatus = "active",
+      machineSc = "",
+      machineFactory = "",
+      uuid,
     } = req.body;
+    const machineUuid = uuid || generateUuid();
 
     if (!machineCode || !machineName) {
       return res.status(400).json({
@@ -42,19 +50,22 @@ router.post("/", async (req, res) => {
     }
 
     const [result] = await pool.query<ResultSetHeader>(
-      `INSERT INTO mesin (machine_code, machine_name, description, status, factory) VALUES (?, ?, ?, ?, ?)`,
+      `INSERT INTO mesin (uuid, machine_code, machine_name, machine_desc, machine_status, machine_sc, machine_factory) VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [
+        machineUuid,
         machineCode.trim().toUpperCase(),
         machineName.trim(),
-        description.trim(),
-        status,
-        String(factory).trim(),
+        machineDesc.trim(),
+        machineStatus,
+        String(machineSc).trim(),
+        String(machineFactory).trim(),
       ],
     );
 
-    const [newRow] = await pool.query<RowDataPacket[]>("SELECT * FROM mesin WHERE id = ?", [
-      result.insertId,
-    ]);
+    const [newRow] = await pool.query<RowDataPacket[]>(
+      "SELECT * FROM mesin WHERE uuid = ?",
+      [machineUuid],
+    );
 
     res.status(201).json({ success: true, data: newRow[0] });
   } catch (err: unknown) {
@@ -69,15 +80,16 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:uuid", async (req, res) => {
   try {
-    const { id } = req.params;
+    const { uuid } = req.params;
     const {
       machineCode,
       machineName,
-      description = "",
-      status = "active",
-      factory = "",
+      machineDesc = "",
+      machineStatus = "active",
+      machineSc = "",
+      machineFactory = "",
     } = req.body;
 
     if (!machineCode || !machineName) {
@@ -88,20 +100,22 @@ router.put("/:id", async (req, res) => {
     }
 
     await pool.query(
-      `UPDATE mesin SET machine_code = ?, machine_name = ?, description = ?, status = ?, factory = ? WHERE id = ?`,
+      `UPDATE mesin SET machine_code = ?, machine_name = ?, machine_desc = ?, machine_status = ?, machine_sc = ?, machine_factory = ? WHERE uuid = ?`,
       [
         machineCode.trim().toUpperCase(),
         machineName.trim(),
-        description.trim(),
-        status,
-        String(factory).trim(),
-        id,
+        machineDesc.trim(),
+        machineStatus,
+        String(machineSc).trim(),
+        String(machineFactory).trim(),
+        uuid,
       ],
     );
 
-    const [updatedRow] = await pool.query<RowDataPacket[]>("SELECT * FROM mesin WHERE id = ?", [
-      id,
-    ]);
+    const [updatedRow] = await pool.query<RowDataPacket[]>(
+      "SELECT * FROM mesin WHERE uuid = ?",
+      [uuid],
+    );
 
     res.json({ success: true, data: updatedRow[0] });
   } catch (err: unknown) {
@@ -109,24 +123,27 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.patch("/:id/toggle", async (req, res) => {
+router.patch("/:uuid/toggle", async (req, res) => {
   try {
-    const { id } = req.params;
+    const { uuid } = req.params;
     await pool.query(
-      `UPDATE mesin SET status = IF(status = 'active', 'inactive', 'active') WHERE id = ?`,
-      [id],
+      `UPDATE mesin SET machine_status = IF(machine_status = 'active', 'inactive', 'active') WHERE uuid = ?`,
+      [uuid],
     );
-    const [row] = await pool.query<RowDataPacket[]>("SELECT * FROM mesin WHERE id = ?", [id]);
+    const [row] = await pool.query<RowDataPacket[]>(
+      "SELECT * FROM mesin WHERE uuid = ?",
+      [uuid],
+    );
     res.json({ success: true, data: row[0] });
   } catch (err: unknown) {
     res.status(500).json({ success: false, error: (err as Error).message });
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:uuid", async (req, res) => {
   try {
-    const { id } = req.params;
-    await pool.query("DELETE FROM mesin WHERE id = ?", [id]);
+    const { uuid } = req.params;
+    await pool.query("DELETE FROM mesin WHERE uuid = ?", [uuid]);
     res.json({ success: true, message: "Mesin berhasil dihapus." });
   } catch (err: unknown) {
     res.status(500).json({ success: false, error: (err as Error).message });

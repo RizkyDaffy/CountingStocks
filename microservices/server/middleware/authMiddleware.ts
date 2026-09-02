@@ -27,6 +27,7 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
     "/api/devices/station-login",
     "/api/health",
     "/api/qr/info",
+    "/api/iot-monitor",
     "/iot",
   ];
 

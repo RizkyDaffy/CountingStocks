@@ -387,7 +387,7 @@ function CreateMasterPartPage() {
                 >
                   <option value="">- Tidak ada -</option>
                   {mesinList.map((m) => (
-                    <option key={m.id} value={m.machine_code}>
+                    <option key={m.uuid} value={m.machine_code}>
                       {m.machine_code} - {m.machine_name}
                     </option>
                   ))}
@@ -409,8 +409,8 @@ function CreateMasterPartPage() {
                     Pilih Factory
                   </option>
                   {factories.map((f) => (
-                    <option key={f.id} value={f.name}>
-                      {f.name}
+                    <option key={f.uuid} value={f.factory_name}>
+                      {f.factory_name}
                     </option>
                   ))}
                 </select>

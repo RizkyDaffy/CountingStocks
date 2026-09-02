@@ -17,6 +17,8 @@ import { Route as TaskHistoryRouteImport } from './routes/task-history'
 import { Route as ScanRouteImport } from './routes/scan'
 import { Route as QrViewerRouteImport } from './routes/qr-viewer'
 import { Route as QrPrivilegesRouteImport } from './routes/qr-privileges'
+import { Route as PlantRouteImport } from './routes/plant'
+import { Route as MonitorRouteImport } from './routes/monitor'
 import { Route as ModelRouteImport } from './routes/model'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as FactoryRouteImport } from './routes/factory'
@@ -76,6 +78,16 @@ const QrViewerRoute = QrViewerRouteImport.update({
 const QrPrivilegesRoute = QrPrivilegesRouteImport.update({
   id: '/qr-privileges',
   path: '/qr-privileges',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlantRoute = PlantRouteImport.update({
+  id: '/plant',
+  path: '/plant',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MonitorRoute = MonitorRouteImport.update({
+  id: '/monitor',
+  path: '/monitor',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ModelRoute = ModelRouteImport.update({
@@ -191,6 +203,8 @@ export interface FileRoutesByFullPath {
   '/factory': typeof FactoryRoute
   '/login': typeof LoginRoute
   '/model': typeof ModelRoute
+  '/monitor': typeof MonitorRoute
+  '/plant': typeof PlantRoute
   '/qr-privileges': typeof QrPrivilegesRoute
   '/qr-viewer': typeof QrViewerRoute
   '/scan': typeof ScanRoute
@@ -221,6 +235,8 @@ export interface FileRoutesByTo {
   '/factory': typeof FactoryRoute
   '/login': typeof LoginRoute
   '/model': typeof ModelRoute
+  '/monitor': typeof MonitorRoute
+  '/plant': typeof PlantRoute
   '/qr-privileges': typeof QrPrivilegesRoute
   '/qr-viewer': typeof QrViewerRoute
   '/scan': typeof ScanRoute
@@ -252,6 +268,8 @@ export interface FileRoutesById {
   '/factory': typeof FactoryRoute
   '/login': typeof LoginRoute
   '/model': typeof ModelRoute
+  '/monitor': typeof MonitorRoute
+  '/plant': typeof PlantRoute
   '/qr-privileges': typeof QrPrivilegesRoute
   '/qr-viewer': typeof QrViewerRoute
   '/scan': typeof ScanRoute
@@ -284,6 +302,8 @@ export interface FileRouteTypes {
     | '/factory'
     | '/login'
     | '/model'
+    | '/monitor'
+    | '/plant'
     | '/qr-privileges'
     | '/qr-viewer'
     | '/scan'
@@ -314,6 +334,8 @@ export interface FileRouteTypes {
     | '/factory'
     | '/login'
     | '/model'
+    | '/monitor'
+    | '/plant'
     | '/qr-privileges'
     | '/qr-viewer'
     | '/scan'
@@ -344,6 +366,8 @@ export interface FileRouteTypes {
     | '/factory'
     | '/login'
     | '/model'
+    | '/monitor'
+    | '/plant'
     | '/qr-privileges'
     | '/qr-viewer'
     | '/scan'
@@ -375,6 +399,8 @@ export interface RootRouteChildren {
   FactoryRoute: typeof FactoryRoute
   LoginRoute: typeof LoginRoute
   ModelRoute: typeof ModelRoute
+  MonitorRoute: typeof MonitorRoute
+  PlantRoute: typeof PlantRoute
   QrPrivilegesRoute: typeof QrPrivilegesRoute
   QrViewerRoute: typeof QrViewerRoute
   ScanRoute: typeof ScanRoute
@@ -450,6 +476,20 @@ declare module '@tanstack/react-router' {
       path: '/qr-privileges'
       fullPath: '/qr-privileges'
       preLoaderRoute: typeof QrPrivilegesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/plant': {
+      id: '/plant'
+      path: '/plant'
+      fullPath: '/plant'
+      preLoaderRoute: typeof PlantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/monitor': {
+      id: '/monitor'
+      path: '/monitor'
+      fullPath: '/monitor'
+      preLoaderRoute: typeof MonitorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/model': {
@@ -607,6 +647,8 @@ const rootRouteChildren: RootRouteChildren = {
   FactoryRoute: FactoryRoute,
   LoginRoute: LoginRoute,
   ModelRoute: ModelRoute,
+  MonitorRoute: MonitorRoute,
+  PlantRoute: PlantRoute,
   QrPrivilegesRoute: QrPrivilegesRoute,
   QrViewerRoute: QrViewerRoute,
   ScanRoute: ScanRoute,

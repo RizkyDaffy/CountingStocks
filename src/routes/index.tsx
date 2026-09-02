@@ -205,11 +205,11 @@ function StockScanPage() {
                       <div className="p-1">
                         {factories.map((f) => (
                           <SelectItem
-                            key={f.id}
-                            value={f.name}
+                            key={f.uuid}
+                            value={f.factory_name}
                             className="rounded-md focus:bg-accent focus:text-accent-foreground cursor-pointer"
                           >
-                            {f.name}
+                            {f.factory_name}
                           </SelectItem>
                         ))}
                       </div>
@@ -223,7 +223,7 @@ function StockScanPage() {
                     onChange={setMachineOrigin}
                     placeholder="Pilih Mesin"
                     options={mesinList
-                      .filter((m) => m.status === "active")
+                      .filter((m) => m.machine_status === "active")
                       .map((m) => `${m.machine_code} - ${m.machine_name}`)}
                   />
                 </Field>

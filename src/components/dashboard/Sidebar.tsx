@@ -21,6 +21,8 @@ import {
   Monitor,
   Cpu,
   ShieldAlert,
+  Link2,
+  Activity,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -67,6 +69,12 @@ export const NAV_ITEMS: NavItem[] = [
     description: "Pindai QR Code: IN/OUT",
     to: "/scan",
     icon: QrCode,
+  },
+  {
+    label: "IoT Monitor",
+    description: "Monitor status scan IoT",
+    to: "/monitor",
+    icon: Activity,
   },
 ];
 
@@ -116,6 +124,12 @@ export const MANAGEMENT_ITEMS: NavItem[] = [
 ];
 
 export const MASTER_DATA_ITEMS: NavItem[] = [
+  {
+    label: "Plant & SC",
+    description: "Kelola Supply Chain (SC) data",
+    to: "/plant",
+    icon: Link2,
+  },
   {
     label: "Master Data",
     description: "Management Master Data",

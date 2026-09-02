@@ -169,8 +169,8 @@ function AddDeviceModal({ onClose }: { onClose: () => void }) {
               >
                 <option value="">-- Pilih Factory --</option>
                 {factories.map((f) => (
-                  <option key={f.id} value={f.name}>
-                    {f.name}
+                  <option key={f.uuid} value={f.factory_name}>
+                    {f.factory_name}
                   </option>
                 ))}
               </select>
@@ -390,8 +390,8 @@ function EditDeviceModal({ device, onClose }: { device: DeviceRow; onClose: () =
               >
                 <option value="">-- Pilih Factory --</option>
                 {factories.map((f) => (
-                  <option key={f.id} value={f.name}>
-                    {f.name}
+                  <option key={f.uuid} value={f.factory_name}>
+                    {f.factory_name}
                   </option>
                 ))}
               </select>

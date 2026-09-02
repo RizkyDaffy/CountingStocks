@@ -12,10 +12,10 @@ export type MasterPartRow = {
 export async function getMachineFactory(machineCode: string): Promise<string> {
   if (!machineCode?.trim()) return "";
   const [rows] = await pool.query<RowDataPacket[]>(
-    "SELECT factory FROM mesin WHERE UPPER(machine_code) = UPPER(?) LIMIT 1",
+    "SELECT machine_factory FROM mesin WHERE UPPER(machine_code) = UPPER(?) LIMIT 1",
     [machineCode.trim()],
   );
-  return (rows[0]?.factory as string) ?? "";
+  return (rows[0]?.machine_factory as string) ?? "";
 }
 
 export async function persistComputedFields(row: RowDataPacket): Promise<void> {

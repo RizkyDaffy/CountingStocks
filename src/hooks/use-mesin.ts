@@ -2,12 +2,13 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchApi } from "@/lib/api";
 
 export type Mesin = {
-  id: number;
+  uuid: string;
   machine_code: string;
   machine_name: string;
-  description: string;
-  factory?: string;
-  status: "active" | "inactive";
+  machine_desc: string;
+  machine_status: "active" | "inactive";
+  machine_sc: string;
+  machine_factory: string;
   created_at: string;
   updated_at: string;
 };
@@ -15,9 +16,10 @@ export type Mesin = {
 export type CreateMesinPayload = {
   machineCode: string;
   machineName: string;
-  description?: string;
-  factory?: string;
-  status: "active" | "inactive";
+  machineDesc?: string;
+  machineSc?: string;
+  machineFactory?: string;
+  machineStatus?: "active" | "inactive";
 };
 
 export function useMesin(search = "") {
@@ -41,8 +43,8 @@ export function useCreateMesin() {
 export function useUpdateMesin() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, ...payload }: CreateMesinPayload & { id: number }) =>
-      fetchApi<Mesin>(`/mesin/${id}`, { method: "PUT", body: JSON.stringify(payload) }),
+    mutationFn: ({ uuid, ...payload }: CreateMesinPayload & { uuid: string }) =>
+      fetchApi<Mesin>(`/mesin/${uuid}`, { method: "PUT", body: JSON.stringify(payload) }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["mesin"] }),
   });
 }
@@ -50,7 +52,8 @@ export function useUpdateMesin() {
 export function useToggleMesinStatus() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (id: number) => fetchApi<Mesin>(`/mesin/${id}/toggle`, { method: "PATCH" }),
+    mutationFn: (uuid: string) =>
+      fetchApi<Mesin>(`/mesin/${uuid}/toggle`, { method: "PATCH" }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["mesin"] }),
   });
 }
@@ -58,7 +61,8 @@ export function useToggleMesinStatus() {
 export function useDeleteMesin() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (id: number) => fetchApi<{ message: string }>(`/mesin/${id}`, { method: "DELETE" }),
+    mutationFn: (uuid: string) =>
+      fetchApi<{ message: string }>(`/mesin/${uuid}`, { method: "DELETE" }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["mesin"] }),
   });
 }

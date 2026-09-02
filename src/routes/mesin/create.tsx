@@ -4,13 +4,13 @@ import { z } from "zod";
 import { ArrowLeft, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { useCreateMesin, useUpdateMesin, useMesin } from "@/hooks/use-mesin";
-import { FactoryApi } from "@/hooks/use-master-data";
+import { FactoryApi, ScApi } from "@/hooks/use-master-data";
 import { useTvDashboard } from "@/hooks/use-tv-dashboard";
 import { MinimumStockGrid } from "@/components/mesin/MinimumStockGrid";
 import "@/routes/tv.css";
 
 const searchSchema = z.object({
-  editId: z.number().optional(),
+  editId: z.string().optional(),
 });
 
 export const Route = createFileRoute("/mesin/create")({
@@ -56,29 +56,32 @@ function CreateMesinPage() {
   const isEdit = !!editId;
 
   const { data: mesinList = [] } = useMesin();
-  const editMesin = isEdit ? mesinList.find((m) => m.id === editId) : null;
+  const editMesin = isEdit ? mesinList.find((m) => m.uuid === editId) : null;
 
   const createMesin = useCreateMesin();
   const updateMesin = useUpdateMesin();
 
   const [machineCode, setMachineCode] = useState("");
   const [machineName, setMachineName] = useState("");
-  const [description, setDescription] = useState("");
-  const [status, setStatus] = useState<"active" | "inactive">("active");
-  const [factory, setFactory] = useState("");
+  const [machineDesc, setMachineDesc] = useState("");
+  const [machineStatus, setMachineStatus] = useState<"active" | "inactive">("active");
+  const [machineFactory, setMachineFactory] = useState("");
+  const [machineSc, setMachineSc] = useState("");
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
   const { data: factories = [] } = FactoryApi.useGetAll();
-  const { data: stockPreview } = useTvDashboard(factory, "A", !!factory);
+  const { data: scList = [] } = ScApi.useGetAll();
+  const { data: stockPreview } = useTvDashboard(machineFactory, "A", !!machineFactory);
 
   useEffect(() => {
     if (editMesin) {
       setMachineCode(editMesin.machine_code);
       setMachineName(editMesin.machine_name);
-      setDescription(editMesin.description ?? "");
-      setStatus(editMesin.status);
-      setFactory(editMesin.factory ?? "");
+      setMachineDesc(editMesin.machine_desc ?? "");
+      setMachineStatus(editMesin.machine_status);
+      setMachineFactory(editMesin.machine_factory ?? "");
+      setMachineSc(editMesin.machine_sc || "SC1");
     }
   }, [editMesin]);
 
@@ -90,14 +93,15 @@ function CreateMesinPage() {
       const payload = {
         machineCode: machineCode.trim(),
         machineName: machineName.trim(),
-        description: description.trim(),
-        factory: factory.trim(),
-        status,
+        machineDesc: machineDesc.trim(),
+        machineFactory: machineFactory.trim(),
+        machineSc: machineSc || "SC1",
+        machineStatus,
       };
 
       if (isEdit && editId) {
         updateMesin.mutate(
-          { id: editId, ...payload },
+          { uuid: editId, ...payload },
           {
             onSuccess: () => {
               setSuccess(true);
@@ -119,9 +123,10 @@ function CreateMesinPage() {
     [
       machineCode,
       machineName,
-      description,
-      factory,
-      status,
+      machineDesc,
+      machineFactory,
+      machineSc,
+      machineStatus,
       isEdit,
       editId,
       createMesin,
@@ -135,7 +140,6 @@ function CreateMesinPage() {
   return (
     <DashboardLayout>
       <div className="mx-auto max-w-3xl animate-in fade-in duration-300">
-        {}
         <div className="mb-6 flex items-center justify-between">
           <div>
             <span className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
@@ -153,12 +157,10 @@ function CreateMesinPage() {
           </Link>
         </div>
 
-        {}
         <form
           onSubmit={handleSubmit}
           className="rounded-2xl border border-border bg-card p-6 sm:p-8"
         >
-          {}
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <Field label="Machine Code" required>
               <input
@@ -185,35 +187,54 @@ function CreateMesinPage() {
             </Field>
           </div>
 
-          {}
           <div className="mt-5">
             <Field label="Description">
               <input
                 id="input-description"
                 type="text"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                value={machineDesc}
+                onChange={(e) => setMachineDesc(e.target.value)}
                 placeholder="Optional"
                 className={INPUT}
               />
             </Field>
           </div>
 
-          {}
-          <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
             <Field label="Factory" required>
               <div className="relative">
                 <select
                   id="input-factory"
-                  value={factory}
-                  onChange={(e) => setFactory(e.target.value)}
+                  value={machineFactory}
+                  onChange={(e) => setMachineFactory(e.target.value)}
                   required
                   className={SELECT}
                 >
-                  <option value="">Pilih factory…</option>
+                  <option value="">Pilih factory...</option>
                   {factories.map((f) => (
-                    <option key={f.id} value={f.name}>
-                      {f.name}
+                    <option key={f.uuid} value={f.uuid}>
+                      {f.factory_name}
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                  ▾
+                </div>
+              </div>
+            </Field>
+
+            <Field label="SC (Supply Chain)" required>
+              <div className="relative">
+                <select
+                  id="input-sc"
+                  value={machineSc}
+                  onChange={(e) => setMachineSc(e.target.value)}
+                  className={SELECT}
+                >
+                  <option value="SC1">SC1</option>
+                  {scList.map((sc) => (
+                    <option key={sc.id} value={sc.id}>
+                      {sc.sc_id}
                     </option>
                   ))}
                 </select>
@@ -227,8 +248,10 @@ function CreateMesinPage() {
               <div className="relative">
                 <select
                   id="input-status"
-                  value={status}
-                  onChange={(e) => setStatus(e.target.value as "active" | "inactive")}
+                  value={machineStatus}
+                  onChange={(e) =>
+                    setMachineStatus(e.target.value as "active" | "inactive")
+                  }
                   className={SELECT}
                 >
                   <option value="active">Active</option>
@@ -241,19 +264,18 @@ function CreateMesinPage() {
             </Field>
           </div>
 
-          {factory && (
+          {machineFactory && (
             <div className="mt-8 rounded-2xl border border-border bg-card-elevated/30 p-5">
               <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-4">
                 Minimum Stock / Machine
               </h3>
               <p className="text-xs text-muted-foreground mb-4">
-                Mesin untuk factory <strong>{factory}</strong> - status berdasarkan Stok Jam.
+                Mesin untuk factory - status berdasarkan Stok Jam.
               </p>
               <MinimumStockGrid machines={stockPreview?.machines ?? []} compact />
             </div>
           )}
 
-          {}
           {submitError && (
             <div className="mt-5 flex items-start gap-2.5 rounded-xl border border-destructive/30 bg-destructive/10 p-3.5 text-sm text-destructive">
               <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
@@ -261,15 +283,13 @@ function CreateMesinPage() {
             </div>
           )}
 
-          {}
           {success && (
             <div className="mt-5 flex items-center gap-2.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3.5 text-sm text-emerald-600 dark:text-emerald-400">
               <CheckCircle2 className="h-4 w-4 shrink-0" />
-              Mesin berhasil {isEdit ? "diperbarui" : "disimpan"}! Mengalihkan…
+              Mesin berhasil {isEdit ? "diperbarui" : "disimpan"}! Mengalihkan...
             </div>
           )}
 
-          {}
           <div className="mt-8 flex justify-end gap-3">
             <Link
               to="/mesin"

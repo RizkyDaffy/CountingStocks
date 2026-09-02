@@ -39,7 +39,7 @@ function MesinPage() {
 
   const handleDelete = useCallback(() => {
     if (!deleteTarget) return;
-    deleteMesin.mutate(deleteTarget.id, {
+    deleteMesin.mutate(deleteTarget.uuid, {
       onSuccess: () => setDeleteTarget(null),
       onError: (e) => setDeleteError(e.message),
     });
@@ -48,7 +48,6 @@ function MesinPage() {
   return (
     <DashboardLayout>
       <div className="animate-in fade-in duration-300">
-        {}
         <div className="mb-6">
           <span className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
             Machine Management
@@ -58,7 +57,6 @@ function MesinPage() {
           </h1>
         </div>
 
-        {}
         <div className="mb-4 flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 sm:flex-row sm:items-center sm:gap-4">
           <div className="relative flex-1">
             <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -81,7 +79,6 @@ function MesinPage() {
           </Link>
         </div>
 
-        {}
         <div className="rounded-2xl border border-border bg-card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full min-w-[600px] border-separate border-spacing-0 text-left text-sm">
@@ -127,10 +124,10 @@ function MesinPage() {
                 ) : (
                   mesinList.map((m) => (
                     <MesinRow
-                      key={m.id}
+                      key={m.uuid}
                       mesin={m}
                       onDelete={confirmDelete}
-                      onToggle={() => toggleStatus.mutate(m.id)}
+                      onToggle={() => toggleStatus.mutate(m.uuid)}
                       isToggling={toggleStatus.isPending}
                     />
                   ))
@@ -141,7 +138,6 @@ function MesinPage() {
         </div>
       </div>
 
-      {/* Delete confirmation dialog */}
       {deleteTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-6 shadow-2xl animate-in zoom-in-95 duration-200">
@@ -195,66 +191,58 @@ function MesinRow({
 }) {
   return (
     <tr className="group transition-smooth hover:bg-card-elevated/40">
-      {/* Machine Code */}
       <td className="border-b border-border/60 px-5 py-4">
         <span className="font-mono text-[13px] font-bold text-blue-500 dark:text-blue-400">
           {mesin.machine_code}
         </span>
       </td>
 
-      {/* Machine Name */}
       <td className="border-b border-border/60 px-5 py-4">
         <span className="text-[13.5px] font-medium text-foreground">{mesin.machine_name}</span>
       </td>
 
-      {/* Description */}
       <td className="border-b border-border/60 px-5 py-4 text-muted-foreground">
-        <span className="text-[13px]">{mesin.description || "-"}</span>
+        <span className="text-[13px]">{mesin.machine_desc || "-"}</span>
       </td>
 
-      {/* Status */}
       <td className="border-b border-border/60 px-5 py-4">
         <span
           className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider ${
-            mesin.status === "active"
+            mesin.machine_status === "active"
               ? "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400"
               : "bg-muted text-muted-foreground"
           }`}
         >
-          {mesin.status === "active" ? "Active" : "Inactive"}
+          {mesin.machine_status === "active" ? "Active" : "Inactive"}
         </span>
       </td>
 
-      {/* Actions */}
       <td className="border-b border-border/60 px-5 py-4 text-right">
         <div className="inline-flex items-center gap-1">
-          {/* Edit */}
           <Link
             to="/mesin/create"
-            search={{ editId: mesin.id }}
-            id={`btn-edit-mesin-${mesin.id}`}
+            search={{ editId: mesin.uuid }}
+            id={`btn-edit-mesin-${mesin.uuid}`}
             className="inline-flex h-8 w-8 items-center justify-center rounded-full text-blue-500 dark:text-blue-400 transition-smooth hover:bg-blue-500/10"
             title="Edit"
           >
             <Pencil className="h-4 w-4" />
           </Link>
-          {/* Toggle status */}
           <button
-            id={`btn-toggle-mesin-${mesin.id}`}
+            id={`btn-toggle-mesin-${mesin.uuid}`}
             onClick={onToggle}
             disabled={isToggling}
             className={`inline-flex h-8 w-8 items-center justify-center rounded-full transition-smooth disabled:opacity-50 ${
-              mesin.status === "active"
+              mesin.machine_status === "active"
                 ? "text-emerald-500 hover:bg-emerald-500/10"
                 : "text-muted-foreground hover:bg-accent"
             }`}
-            title={mesin.status === "active" ? "Nonaktifkan" : "Aktifkan"}
+            title={mesin.machine_status === "active" ? "Nonaktifkan" : "Aktifkan"}
           >
             <CirclePlay className="h-4 w-4" />
           </button>
-          {/* Delete */}
           <button
-            id={`btn-delete-mesin-${mesin.id}`}
+            id={`btn-delete-mesin-${mesin.uuid}`}
             onClick={() => onDelete(mesin)}
             className="inline-flex h-8 w-8 items-center justify-center rounded-full text-red-400 transition-smooth hover:bg-red-500/10 hover:text-red-500"
             title="Hapus"

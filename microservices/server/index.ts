@@ -19,7 +19,8 @@ import teiteiRoutes from "./routes/teitei.js";
 import bcpRoutes from "./routes/bcp.js";
 import { startBcpSync } from "./lib/bcpSyncService.js";
 
-import iotStateRoutes from "./routes/iotState.js";
+import scRoutes from "./routes/sc.js";
+import iotStateRoutes, { getIotEntries } from "./routes/iotState.js";
 import { requireAuth } from "./middleware/authMiddleware.js";
 import { configuredCors, securityHeaders } from "./middleware/securityMiddleware.js";
 import { loginRateLimiter } from "./middleware/rateLimiter.js";
@@ -58,7 +59,7 @@ const dbErr = (e: unknown): string => {
 app.get("/api/v1/mc-list", async (_req, res) => {
   try {
     const [rows] = await pool.query<RowDataPacket[]>(
-      "SELECT id, machine_code, machine_name, description, status, created_at, updated_at, factory FROM mesin ORDER BY factory ASC, machine_code ASC",
+      "SELECT uuid, machine_code, machine_name, machine_desc, machine_status, machine_sc, machine_factory, created_at, updated_at FROM mesin ORDER BY machine_factory ASC, machine_code ASC",
     );
     const [qrRows] = await pool.query<RowDataPacket[]>(
       "SELECT machine_origin, GROUP_CONCAT(qr_id ORDER BY created_at ASC SEPARATOR ', ') AS qr_origin FROM qr_codes WHERE machine_origin IS NOT NULL AND machine_origin != '' GROUP BY machine_origin",
@@ -70,18 +71,21 @@ app.get("/api/v1/mc-list", async (_req, res) => {
     const factories: Record<string, unknown[]> = {};
     for (const row of rows) {
       const f =
-        row.factory && String(row.factory).trim() ? String(row.factory).trim() : "Unassigned";
+        row.machine_factory && String(row.machine_factory).trim()
+          ? String(row.machine_factory).trim()
+          : "Unassigned";
       if (!factories[f]) factories[f] = [];
       factories[f].push({
         mc: String(row.machine_code),
-        id: row.id,
+        uuid: row.uuid,
         machine_code: row.machine_code,
         machine_name: row.machine_name,
-        description: row.description ?? "",
-        status: row.status,
+        machine_desc: row.machine_desc ?? "",
+        machine_status: row.machine_status,
+        machine_sc: row.machine_sc ?? "",
+        machine_factory: row.machine_factory ?? "",
         created_at: row.created_at,
         updated_at: row.updated_at,
-        factory: row.factory ?? "",
         qr_origin: qrByMachine.get(String(row.machine_code)) ?? null,
       });
     }
@@ -129,6 +133,17 @@ app.get("/api/health", async (_req, res) => {
   });
 });
 
+app.get("/api/iot-monitor", (_req, res) => {
+  const entries = getIotEntries();
+  const scanned = Object.entries(entries)
+    .filter(([, v]) => v.scanned)
+    .map(([k, v]) => ({ path: k, ...v }));
+  const notScanned = Object.entries(entries)
+    .filter(([, v]) => !v.scanned)
+    .map(([k, v]) => ({ path: k, ...v }));
+  res.json({ success: true, data: { scanned, notScanned, total: Object.keys(entries).length } });
+});
+
 app.use("/api/qr", qrRoutes);
 app.use("/api/stock", stockRoutes);
 app.use("/api/tasks", taskRoutes);
@@ -146,6 +161,7 @@ app.use("/api/privileges", privilegesRoutes);
 app.use("/api/stock-analytics", stockAnalyticsRoutes);
 app.use("/api/teitei", teiteiRoutes);
 app.use("/api/bcp", bcpRoutes);
+app.use("/api/sc", scRoutes);
 
 // Start background Google Sheet → stock sync for BCP-linked parts
 startBcpSync();

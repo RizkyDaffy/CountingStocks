@@ -55,7 +55,7 @@ router.get("/tv", async (req, res) => {
     let mesinQuery = "SELECT * FROM mesin WHERE 1=1";
     const mesinParams: string[] = [];
     if (factory) {
-      mesinQuery += " AND factory = ?";
+      mesinQuery += " AND machine_factory = ?";
       mesinParams.push(factory);
     }
     mesinQuery += " ORDER BY machine_code ASC";
@@ -87,7 +87,7 @@ router.get("/tv", async (req, res) => {
     const partsParams: string[] = [];
     if (factory) {
       partsQuery += ` AND UPPER(mp.machine) IN (
-        SELECT UPPER(machine_code) FROM mesin WHERE factory = ?
+        SELECT UPPER(machine_code) FROM mesin WHERE machine_factory = ?
       )`;
       partsParams.push(factory);
     }
@@ -116,7 +116,7 @@ router.get("/tv", async (req, res) => {
     const [stockRows] = await pool.query<RowDataPacket[]>(stockQuery, stockParams);
 
     const machines = mesinRows.map((m) => {
-      const isActive = m.status === "active";
+      const isActive = m.machine_status === "active";
       const machineKey = String(m.machine_code).toUpperCase();
       const rowsForMachine = analyticsByMachine.get(machineKey) ?? [];
 
@@ -130,7 +130,7 @@ router.get("/tv", async (req, res) => {
         id: m.id,
         machineCode: m.machine_code,
         machineName: m.machine_name,
-        status: m.status,
+        status: m.machine_status,
         isActive,
         stokJam,
         stockJam: stokJam,

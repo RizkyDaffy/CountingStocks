@@ -256,8 +256,8 @@ function CreateUserPage() {
                   >
                     <option value="">Pilih factory…</option>
                     {factories.map((f) => (
-                      <option key={f.id} value={f.name}>
-                        {f.name}
+                      <option key={f.uuid} value={f.factory_name}>
+                        {f.factory_name}
                       </option>
                     ))}
                   </select>

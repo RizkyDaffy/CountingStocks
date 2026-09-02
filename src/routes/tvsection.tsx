@@ -149,7 +149,7 @@ function TvSectionPage() {
               </div>
             ) : (
               factories.map((fac) => (
-                <FactoryCard key={fac.id} name={fac.name} onSelect={handleSelect} />
+                <FactoryCard key={fac.uuid} name={fac.factory_name} onSelect={handleSelect} />
               ))
             )}
           </div>
