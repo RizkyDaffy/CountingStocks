@@ -1,20 +1,22 @@
 {
   "name": "produksi_scanner",
+  "version": "1.0.0",
   "private": true,
   "sideEffects": false,
   "type": "module",
   "scripts": {
     "dev": "vite dev --host",
-    "dev:all": "concurrently \"npm run dev\" \"node backend.js\" ",
+    "dev:all": "concurrently \"npm run dev\" \"node guardian.js\" ",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
     "server": "tsx microservices/server/index.ts",
-    "migrate": "tsx microservices/server/migrate.ts",
-    "migrate:big-update": "tsx microservices/server/migrate-big-update.ts",
-    "migrate:v2": "tsx microservices/server/migrate-v2.ts",
+    "migrate": "tsx migrations/migrate.ts",
+    "migrate:big-update": "tsx migrations/migrate-big-update.ts",
+    "migrate:v2": "tsx migrations/migrate-v2.ts",
+    "migrate:gate": "tsx migrations/schema-gate.ts",
     "setup:iris": "git clone --depth 1 --sparse https://github.com/RizkyDaffy/IRIS.git .iris-tmp && cd .iris-tmp && git sparse-checkout set SDK/JS && cd .. && npm install ./.iris-tmp/SDK/JS --install-links --legacy-peer-deps"
   },
   "dependencies": {

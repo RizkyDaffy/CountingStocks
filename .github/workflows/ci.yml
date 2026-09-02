@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Provide IRIS SDK (file: dependency)
+        run: |
+          git clone --depth 1 --sparse https://github.com/RizkyDaffy/IRIS.git .iris-tmp
+          git -C .iris-tmp sparse-checkout set SDK/JS
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Lint
+        run: npm run lint
+
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Provide IRIS SDK (file: dependency)
+        run: |
+          git clone --depth 1 --sparse https://github.com/RizkyDaffy/IRIS.git .iris-tmp
+          git -C .iris-tmp sparse-checkout set SDK/JS
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image (no push)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: runner
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

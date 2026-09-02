@@ -1,0 +1,32 @@
+# Docker build cache — never copy these into the image
+node_modules
+dist
+dist-ssr
+.output
+.vinxi
+.tanstack
+.nitro
+.wrangler
+.git
+.gitignore
+*.log
+npm-debug.log*
+
+# Secrets — never bake into image layers
+.env
+.env.local
+.env.*.local
+.dev.vars
+
+# Dev tooling
+.vscode
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS
+.DS_Store
+Thumbs.db

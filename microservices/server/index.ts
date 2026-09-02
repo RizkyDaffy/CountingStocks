@@ -26,6 +26,8 @@ import { configuredCors, securityHeaders } from "./middleware/securityMiddleware
 import { loginRateLimiter } from "./middleware/rateLimiter.js";
 import { requestLogger } from "./middleware/logger.js";
 import { notFoundHandler, globalErrorHandler } from "./middleware/errorHandler.js";
+import versionRoutes from "./routes/version.js";
+import { APP_VERSION } from "./version.js";
 import pool from "./db.js";
 import type { RowDataPacket } from "mysql2";
 
@@ -126,6 +128,7 @@ app.get("/api/health", async (_req, res) => {
   res.json({
     status: "Sehat Wal'afiat",
     creator: "di rancang oleh @RizkyDaffy",
+    version: APP_VERSION,
     time: new Date().toISOString(),
     db: dbStatus,
     db_latency_ms: dbLatencyMs,
@@ -162,6 +165,7 @@ app.use("/api/stock-analytics", stockAnalyticsRoutes);
 app.use("/api/teitei", teiteiRoutes);
 app.use("/api/bcp", bcpRoutes);
 app.use("/api/sc", scRoutes);
+app.use("/api", versionRoutes);
 
 // Start background Google Sheet → stock sync for BCP-linked parts
 startBcpSync();

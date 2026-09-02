@@ -12,7 +12,7 @@ services:
       dockerfile: Dockerfile
       target: runner
     container_name: counting-stock
-    image: counting-stock
+    image: ${IMAGE:-counting-stock}
     restart: unless-stopped
     ports:
       - "${APP_PORT:-3000}:3000" # Vite SSR / TanStack Start

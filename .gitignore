@@ -20,7 +20,6 @@ dist-ssr
 
 
 md/
-migrations/
 
 flow.md
 markdown.md
@@ -28,6 +27,7 @@ markdown.md
 # Secrets
 .env
 .env*
+!.env.example
 # Service account keys / credentials
 brain/
 **/credentials.json
@@ -35,8 +35,7 @@ brain/
 *.pem
 *.key
 
-# Docker build artifacts (keep compose + Dockerfile tracked, not cache)
-.dockerignore
+# Docker build artifacts (compose + Dockerfile + dockerignore tracked)
 DOCKER_FIX_REPORT.md
 IoTintegration.md
 PREDEPLOY_CHECK.md

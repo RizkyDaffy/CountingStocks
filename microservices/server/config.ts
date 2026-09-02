@@ -23,6 +23,6 @@ export const config = {
     port: Number(optionalEnv("DB_PORT", "3306")),
     user: optionalEnv("DB_USER", "root"),
     password: optionalEnv("DB_PASSWORD", ""),
-    database: optionalEnv("DB_NAME", "pixel_scan_dashboard"),
+    database: optionalEnv("DB_NAME", "outindb"),
   },
 } as const;

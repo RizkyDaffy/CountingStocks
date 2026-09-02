@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Menu, X } from "lucide-react";
 import { SidebarContent } from "./Sidebar";
+import { UpdateBanner } from "@/components/update-banner";
 
 const SIDEBAR_COLLAPSED_KEY = "sidebar-collapsed";
 
@@ -75,6 +76,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
 
       {/* Main content */}
       <div className={`transition-smooth ${collapsed ? "md:pl-[84px]" : "md:pl-[280px]"}`}>
+        <UpdateBanner />
         {/* Mobile top bar */}
         <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-border-surface bg-surface-sidebar px-4 py-3 backdrop-blur md:hidden">
           <div className="text-sm font-semibold tracking-wide">SUGITY CREATIVES</div>
