@@ -44,7 +44,7 @@ export const Route = createFileRoute("/backup")({
   component: BcpPage,
 });
 
-// ── Wizard steps ───────────────────────────────────────────────────────────────
+//    Wizard steps                          
 type Step = "parts" | "sheets" | "rows";
 
 function BcpPage() {
@@ -183,7 +183,7 @@ function BcpPage() {
   );
 }
 
-// ── Breadcrumb ─────────────────────────────────────────────────────────────────
+//    Breadcrumb                            
 
 function Breadcrumb({
   step,
@@ -235,7 +235,7 @@ function Breadcrumb({
   );
 }
 
-// ── Step 1: Select Part ────────────────────────────────────────────────────────
+//    Step 1: Select Part                  
 
 function StepParts({ onSelect }: { onSelect: (p: BcpPart) => void }) {
   const [search, setSearch] = useState("");
@@ -319,7 +319,7 @@ function StepParts({ onSelect }: { onSelect: (p: BcpPart) => void }) {
   );
 }
 
-// ── Step 2: Select Sheet Tab ──────────────────────────────────────────────────
+//    Step 2: Select Sheet Tab            
 
 function StepSheets({
   part,
@@ -407,7 +407,7 @@ function StepSheets({
   );
 }
 
-// ── Step 3: Match Row in Sheet ─────────────────────────────────────────────────
+//    Step 3: Match Row in Sheet            
 
 function normalise(s: string) {
   return s.trim().toUpperCase().replace(/\s+/g, " ");
@@ -638,7 +638,7 @@ function StepRows({
   );
 }
 
-// ── Existing Links Table ───────────────────────────────────────────────────────
+//    Existing Links Table                  
 
 function ExistingLinks() {
   const { data: links = [], isLoading, refetch } = useBcpLinks();

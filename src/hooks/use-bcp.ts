@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchApi } from "@/lib/api";
 
-// ── Types ──────────────────────────────────────────────────────────────────────
+//    Types                                
 
 export type BcpLink = {
   id: number;
@@ -27,7 +27,7 @@ export type SheetTab = {
   sheetId: number;
 };
 
-// ── Hooks ──────────────────────────────────────────────────────────────────────
+//    Hooks                                
 
 export function useBcpLinks() {
   return useQuery({
@@ -64,7 +64,7 @@ export function useBcpSheetRows(sheetKey: string | null | undefined) {
   });
 }
 
-// ── Mutations ─────────────────────────────────────────────────────────────────
+//    Mutations                            
 
 type SaveLinkPayload = {
   partId: number;

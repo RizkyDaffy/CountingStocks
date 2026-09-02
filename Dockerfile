@@ -1,4 +1,4 @@
-# ── Stage 1: Builder ─────────────────────────────────────────────────────────
+#    Stage 1: Builder                  ─
 # Full Node + all devDependencies needed to compile TypeScript and bundle Vite.
 FROM node:22-alpine AS builder
 
@@ -14,7 +14,7 @@ COPY . .
 # Build the Vite SSR bundle (outputs to dist/)
 RUN npm run build
 
-# ── Stage 2: Production runner ────────────────────────────────────────────────
+#    Stage 2: Production runner          
 # Slim image — no devDependencies, no source, no build tooling.
 FROM node:22-alpine AS runner
 
