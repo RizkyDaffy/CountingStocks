@@ -77,6 +77,60 @@ const STATUS_SORT_ORDER: Record<string, number> = {
   safe: 2,
 };
 
+type ChartPoint = {
+  label: string;
+  value: number;
+  displayValue: number;
+  jam: number;
+  status: string;
+  models: string[];
+  machines: string[];
+};
+
+function ChartTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: { payload?: ChartPoint }[];
+}) {
+  if (!active || !payload?.length) return null;
+  const point = payload[0]?.payload;
+  if (!point) return null;
+
+  return (
+    <div
+      style={{
+        background: "var(--color-bg-surface)",
+        border: "1px solid var(--color-bg-border)",
+        borderRadius: 8,
+        fontSize: 12,
+        padding: "10px 12px",
+        maxWidth: 280,
+      }}
+    >
+      <div
+        style={{
+          fontWeight: 700,
+          color: "var(--color-text-primary)",
+          marginBottom: 6,
+        }}
+      >
+        {point.label}
+      </div>
+      <div style={{ color: "var(--color-text-secondary)", lineHeight: 1.5 }}>
+        value: {point.value} PCs · {Number(point.jam).toFixed(1)} HR
+      </div>
+      <div style={{ color: "var(--color-text-secondary)", lineHeight: 1.5 }}>
+        Models: {point.models.length > 0 ? point.models.join(", ") : "-"}
+      </div>
+      <div style={{ color: "var(--color-text-secondary)", lineHeight: 1.5 }}>
+        Machines: {point.machines.length > 0 ? point.machines.join(", ") : "-"}
+      </div>
+    </div>
+  );
+}
+
 interface CustomBarProps {
   x?: number;
   y?: number;
@@ -246,15 +300,23 @@ function TvPage() {
       const val = data.chartData[i] ?? 0;
       const jam = data.chartStokJam?.[i] ?? 0;
       const status = data.chartStatus?.[i] ?? "warning";
+      const models = data.chartModels?.[i] ?? [];
+      const machines = data.chartMachines?.[i] ?? [];
       return {
         label,
         value: val,
         displayValue: val,
         jam,
         status,
+        models,
+        machines,
       };
     });
-    return points;
+    return points.sort(
+      (a, b) =>
+        (STATUS_SORT_ORDER[a.status] ?? 99) - (STATUS_SORT_ORDER[b.status] ?? 99) ||
+        a.label.localeCompare(b.label),
+    );
   }, [data]);
 
   const yAxisConfig = useMemo(() => {
@@ -508,20 +570,8 @@ function TvPage() {
                       tick={{ fill: "var(--color-text-muted)", fontSize: 10 }}
                     />
                     <Tooltip
-                      formatter={(
-                        val: number,
-                        _name: string,
-                        entry: { payload?: { value: number } },
-                      ) => {
-                        const realVal = entry.payload?.value ?? val;
-                        return [realVal, "value"];
-                      }}
-                      contentStyle={{
-                        background: "var(--color-bg-surface)",
-                        border: "1px solid var(--color-bg-border)",
-                        borderRadius: 8,
-                        fontSize: 12,
-                      }}
+                      content={<ChartTooltip />}
+                      cursor={{ fill: "rgba(59, 107, 255, 0.08)" }}
                     />
                     <Bar dataKey="displayValue" shape={<CustomBar />} isAnimationActive={false} />
                   </BarChart>

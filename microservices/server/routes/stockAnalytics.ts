@@ -163,6 +163,30 @@ router.get("/tv", async (req, res) => {
     });
     const chartStatus = chartStokJam.map((jam) => classifyStockJam(jam, true));
 
+    const modelsByPart = new Map<string, Set<string>>();
+    const machinesByPart = new Map<string, Set<string>>();
+    for (const a of analyticsRows) {
+      const key = String(a.part_name).toUpperCase();
+      const model = String(a.model ?? "").trim();
+      const machine = String(a.machine ?? "").trim();
+      if (model) {
+        const set = modelsByPart.get(key) ?? new Set<string>();
+        set.add(model);
+        modelsByPart.set(key, set);
+      }
+      if (machine) {
+        const set = machinesByPart.get(key) ?? new Set<string>();
+        set.add(machine);
+        machinesByPart.set(key, set);
+      }
+    }
+    const chartModels = stockRows.map((s) =>
+      Array.from(modelsByPart.get(String(s.part_name).toUpperCase()) ?? []),
+    );
+    const chartMachines = stockRows.map((s) =>
+      Array.from(machinesByPart.get(String(s.part_name).toUpperCase()) ?? []),
+    );
+
     const priorityOrder = { critical: 0, warning: 1, safe: 2, none: 3 };
     const priorities = [...machines]
       .filter((m) => m.isActive && m.cardStatus !== "safe" && m.cardStatus !== "none")
@@ -194,6 +218,8 @@ router.get("/tv", async (req, res) => {
         chartData,
         chartStokJam,
         chartStatus,
+        chartModels,
+        chartMachines,
         priorities,
       },
     });

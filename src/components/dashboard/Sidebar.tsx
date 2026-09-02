@@ -188,7 +188,7 @@ export function SidebarContent({ collapsed, onToggle, onNavigate }: Props) {
       >
         <div
           className={`min-w-0 leading-tight overflow-hidden transition-smooth ${
-            collapsed ? "w-0 opacity-0" : "w-auto opacity-100"
+            collapsed ? "hidden w-0 opacity-0" : "w-auto opacity-100"
           }`}
         >
           <div className="truncate text-[13px] font-semibold tracking-wide text-foreground">

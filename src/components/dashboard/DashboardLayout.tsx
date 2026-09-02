@@ -2,9 +2,27 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Menu, X } from "lucide-react";
 import { SidebarContent } from "./Sidebar";
 
+const SIDEBAR_COLLAPSED_KEY = "sidebar-collapsed";
+
+function readSidebarCollapsed(): boolean {
+  try {
+    return window.localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
 export function DashboardLayout({ children }: { children: ReactNode }) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(readSidebarCollapsed);
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(SIDEBAR_COLLAPSED_KEY, collapsed ? "1" : "0");
+    } catch {
+      /* storage unavailable - keep state in memory only */
+    }
+  }, [collapsed]);
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";

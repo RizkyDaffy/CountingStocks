@@ -37,6 +37,8 @@ export type TvDashboardData = {
   chartData: number[];
   chartStokJam: number[];
   chartStatus: ("critical" | "warning" | "safe" | "none")[];
+  chartModels?: string[][];
+  chartMachines?: string[][];
   priorities: TvPriority[];
 };
 
