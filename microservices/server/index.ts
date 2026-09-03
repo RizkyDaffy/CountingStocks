@@ -27,6 +27,7 @@ import { loginRateLimiter } from "./middleware/rateLimiter.js";
 import { requestLogger } from "./middleware/logger.js";
 import { notFoundHandler, globalErrorHandler } from "./middleware/errorHandler.js";
 import versionRoutes from "./routes/version.js";
+import updateRoutes from "./routes/update.js";
 import { APP_VERSION } from "./version.js";
 import pool from "./db.js";
 import type { RowDataPacket } from "mysql2";
@@ -166,6 +167,7 @@ app.use("/api/teitei", teiteiRoutes);
 app.use("/api/bcp", bcpRoutes);
 app.use("/api/sc", scRoutes);
 app.use("/api", versionRoutes);
+app.use("/api/update", updateRoutes);
 
 // Start background Google Sheet → stock sync for BCP-linked parts
 startBcpSync();

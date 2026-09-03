@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowUpCircle, RefreshCw } from "lucide-react";
+import { ArrowUpCircle, Loader2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,6 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { isUpdateAvailable, useUpdateCheck } from "@/hooks/use-update-check";
+import { selfUpdatePhaseLabel, useSelfUpdate } from "@/hooks/use-self-update";
 
 const DISMISSED_KEY = "update-dismissed-version";
 
@@ -22,11 +23,14 @@ function readDismissed(): string {
 
 export function UpdateBanner() {
   const { data: info } = useUpdateCheck();
+  const { phase, message, trigger } = useSelfUpdate();
   const [dismissed, setDismissed] = useState(readDismissed);
   const [changelogOpen, setChangelogOpen] = useState(false);
 
   const updateAvailable = isUpdateAvailable(info);
   const visible = updateAvailable && info?.latest !== dismissed;
+  const busy =
+    phase === "starting" || phase === "updating" || phase === "restarting" || phase === "done";
 
   if (!visible || !info) return null;
 
@@ -57,17 +61,25 @@ export function UpdateBanner() {
           <Button variant="ghost" size="sm" onClick={() => setChangelogOpen(true)}>
             Lihat Changelog
           </Button>
-          <Button variant="ghost" size="sm" onClick={dismiss}>
+          <Button variant="ghost" size="sm" onClick={dismiss} disabled={busy}>
             Nanti
           </Button>
           <Button
             size="sm"
-            onClick={() => window.location.reload()}
-            title="Muat ulang halaman untuk mendapatkan versi terbaru"
+            onClick={trigger}
+            disabled={busy}
+            title={phase === "error" && message ? message : "Perbarui aplikasi ke versi terbaru"}
           >
-            <RefreshCw className="mr-1 h-4 w-4" />
-            Update Sekarang
+            {busy ? (
+              <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+            ) : (
+              <RefreshCw className="mr-1 h-4 w-4" />
+            )}
+            {selfUpdatePhaseLabel(phase)}
           </Button>
+          {phase === "error" && message ? (
+            <span className="text-xs text-destructive">{message}</span>
+          ) : null}
         </div>
       </div>
 

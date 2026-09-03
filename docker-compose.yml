@@ -32,6 +32,8 @@ services:
       VITE_INTERNAL_API_KEY: ${VITE_INTERNAL_API_KEY}
       NODE_ENV: production
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://cstock.sugity.co.id}
+      # Self-update ("Update Sekarang"): absolute path of this project on the Docker host.
+      HOST_PROJECT_DIR: ${HOST_PROJECT_DIR:-}
     networks:
       - app-network
       - nginx-public
@@ -39,6 +41,8 @@ services:
       # Optional: mount .env at runtime (alternative to env vars above)
       # - ./.env:/app/.env:ro
       - app-logs:/app/logs
+      # Self-update: lets the API spawn the one-shot updater container
+      - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
   app-logs:

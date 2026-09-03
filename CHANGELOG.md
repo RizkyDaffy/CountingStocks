@@ -8,6 +8,23 @@ Versioning follows [Semantic Versioning](https://semver.org/):
 - MINOR — new feature, reversible migration
 - PATCH — bug fix, no migration
 
+## [1.2.0] - 2026-09-03
+
+### Added
+- Self-update: "Update Sekarang" (banner + `/updates`) now pulls the newest release image and restarts the service automatically (admin only), instead of only reloading the page.
+- New API endpoint `POST /api/update/run`: spawns a one-shot updater container (docker socket + host project dir) that runs pull, migration gate, and `docker compose up -d --no-build`.
+- Progress feedback while updating (downloading / restarting), with health-poll until the new version is live.
+
+### Changed
+- `docker-compose.yml`: mounts `/var/run/docker.sock` and passes `HOST_PROJECT_DIR` (required for self-update).
+
+### Fixed
+- Removed unused IRIS SDK dependency (file:.iris-tmp) and its CI workflow clone steps.
+- CI lint failures: `eslint --fix` + rule downgrades (`no-explicit-any`, `no-empty` to warn).
+- `scripts/extract-changelog.js`: ESM import + accepts `v`-prefixed tags; release heredoc is now failure-tolerant.
+- `.dockerignore`: excludes nested node_modules, `microservices/google-sheet` (was shipping 300MB+ into the build context), `brain/`, `.iris-tmp`.
+- `scripts/deploy.ps1` v2: pulls image by full name (compose pull skipped buildable services), distinguishes gate refusal from infra failure, `--no-build` on restart.
+
 ## [1.1.0] - 2026-09-03
 
 ### Added

@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
   ArrowUpCircle,
   CheckCircle2,
+  Loader2,
   RefreshCw,
   History,
   Tag,
@@ -17,6 +18,7 @@ import {
   useUpdateCheck,
   type ReleaseInfo,
 } from "@/hooks/use-update-check";
+import { selfUpdatePhaseLabel, useSelfUpdate } from "@/hooks/use-self-update";
 
 export const Route = createFileRoute("/updates")({
   head: () => ({
@@ -105,6 +107,9 @@ function ReleaseCard({
 
 function UpdatesPage() {
   const { data: info, isLoading, dataUpdatedAt, refetch, isRefetching } = useUpdateCheck();
+  const { phase, message, trigger } = useSelfUpdate();
+  const updateBusy =
+    phase === "starting" || phase === "updating" || phase === "restarting" || phase === "done";
 
   const updateAvailable = isUpdateAvailable(info);
   const lastCheck =
@@ -176,13 +181,22 @@ function UpdatesPage() {
                   Pembaruan tersedia: v{info?.latest}
                 </div>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Anda sedang menjalankan v{info?.current}. Muat ulang halaman untuk mendapatkan
-                  versi terbaru.
+                  Anda sedang menjalankan v{info?.current}. Klik "Update Sekarang" untuk memperbarui
+                  aplikasi secara otomatis (admin). Layanan akan dimulai ulang sebentar.
                 </p>
-                <Button size="sm" className="mt-4" onClick={() => window.location.reload()}>
-                  <RefreshCw className="mr-1.5 h-4 w-4" />
-                  Update Sekarang
-                </Button>
+                <div className="mt-4 flex flex-wrap items-center gap-3">
+                  <Button size="sm" onClick={trigger} disabled={updateBusy}>
+                    {updateBusy ? (
+                      <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+                    ) : (
+                      <RefreshCw className="mr-1.5 h-4 w-4" />
+                    )}
+                    {selfUpdatePhaseLabel(phase)}
+                  </Button>
+                  {phase === "error" && message ? (
+                    <span className="text-sm text-destructive">{message}</span>
+                  ) : null}
+                </div>
               </div>
             </div>
           </div>
