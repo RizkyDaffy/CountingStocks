@@ -5,8 +5,11 @@
 #   .\scripts\deploy.ps1 -Tag v1.1.0      # deploy specific version
 #   .\scripts\deploy.ps1 -Tag v1.0.0      # rollback to an older version (gate protects the DB)
 #
-# Sequence: pull image -> migration gate -> restart -> health check (version verify).
-# Requires: docker compose v2, .env with DB credentials, IMAGE env or -Image override.
+# IMPORTANT: run this ON THE DOCKER HOST (the server), from the project root.
+# The compose file uses external networks (henkaten-be_app-network, nginx-public)
+# and an external MySQL — these only exist on the host that runs the stack.
+#
+# Sequence: pre-flight checks -> pull image -> migration gate -> restart -> health check.
 
 param(
     [string]$Tag = "latest",
@@ -22,30 +25,70 @@ if (-not $Image) {
 
 Write-Host "[deploy] Image: $Image"
 
+# ---------- Pre-flight ----------
+if (-not (Test-Path ".env")) {
+    Write-Host "[deploy] WARNING: no .env file in current directory." -ForegroundColor Yellow
+    Write-Host "[deploy]          Compose will default env vars to blank (INTERNAL_API_KEY etc.)." -ForegroundColor Yellow
+} else {
+    foreach ($var in @("INTERNAL_API_KEY", "VITE_INTERNAL_API_KEY")) {
+        $found = Select-String -Path ".env" -Pattern ("^\s*" + $var + "\s*=") -ErrorAction SilentlyContinue
+        if (-not $found) {
+            Write-Host "[deploy] WARNING: $var not set in .env — compose warning is expected." -ForegroundColor Yellow
+        }
+    }
+}
+
+foreach ($net in @("henkaten-be_app-network", "nginx-public")) {
+    docker network inspect $net *> $null
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "[deploy] FATAL: Docker network '$net' does not exist on this machine." -ForegroundColor Red
+        Write-Host "[deploy] This script must run on the Docker host where the stack lives" -ForegroundColor Red
+        Write-Host "[deploy] (the server that runs counting-stock + MySQL + nginx)." -ForegroundColor Red
+        Write-Host "[deploy] If you ARE on the server: check 'docker network ls'." -ForegroundColor Red
+        exit 1
+    }
+}
+
+# ---------- Pull ----------
+# NOTE: 'docker compose pull' SKIPS services with a build: section — pull by full name instead.
+Write-Host "[deploy] Pulling image..."
+docker pull $Image
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[deploy] Pull failed. Tag may not exist in the registry: $Image" -ForegroundColor Red
+    Write-Host "[deploy] Check: ghcr.io package page, and that the Release workflow succeeded for this tag." -ForegroundColor Red
+    exit 1
+}
+
 $env:IMAGE = $Image
 
-Write-Host "[deploy] Pulling image..."
-docker compose pull counting-stock --ignore-buildable
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "[deploy] Pull failed. Image/tag may not exist in the registry: $Image" -ForegroundColor Red
-    exit 1
-}
-
+# ---------- Migration gate ----------
 Write-Host "[deploy] Running migration gate..."
-docker compose run --rm --no-deps counting-stock npm run migrate:gate
+$gateOutput = (docker compose run --rm --no-deps counting-stock npm run migrate:gate) 2>&1
+$gateOutput | ForEach-Object { Write-Host "  $_" }
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "[deploy] Migration gate REFUSED deployment." -ForegroundColor Red
-    Write-Host "[deploy] The database is newer than this image. Pick a newer tag or restore the DB from backup." -ForegroundColor Red
+    if ("$gateOutput" -match "REFUSING") {
+        Write-Host "[deploy] Migration gate REFUSED: database schema is newer than this image." -ForegroundColor Red
+        Write-Host "[deploy] Deploy a version >= the DB schema version, or restore the DB from backup." -ForegroundColor Red
+    } else {
+        Write-Host "[deploy] Migration gate FAILED TO RUN (not a version problem)." -ForegroundColor Red
+        Write-Host "[deploy] Read the output above — typical causes:" -ForegroundColor Red
+        Write-Host "[deploy]   - MySQL unreachable: check DB_HOST/DB_PASSWORD in .env, 'docker ps' for the db container" -ForegroundColor Red
+        Write-Host "[deploy]   - Missing external network: run this script on the Docker host" -ForegroundColor Red
+        Write-Host "[deploy]   - Wrong working directory: run from project root (next to docker-compose.yml)" -ForegroundColor Red
+    }
     exit 1
 }
 
+# ---------- Restart ----------
 Write-Host "[deploy] Restarting service..."
-docker compose up -d counting-stock
+# --no-build: never build locally, always use the pulled registry image.
+docker compose up -d --no-build counting-stock
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[deploy] Failed to start. Roll back: .\scripts\deploy.ps1 -Tag <previous-tag>" -ForegroundColor Red
     exit 1
 }
 
+# ---------- Health check ----------
 $appPort = if ($env:APP_PORT) { $env:APP_PORT } else { "3000" }
 $healthUrl = "http://localhost:${appPort}/api/health"
 
