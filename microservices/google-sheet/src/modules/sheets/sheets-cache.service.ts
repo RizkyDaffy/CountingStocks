@@ -29,7 +29,7 @@ export class SheetsCacheService implements OnModuleInit, OnModuleDestroy {
 
   onModuleInit() {
     if (!this.config.googleKeyPath) {
-      this.logger.warn("No service account key — sheets cache disabled.");
+      this.logger.warn("No service account key - sheets cache disabled.");
       return;
     }
     const interval = Math.max(MIN_POLL_MS, this.config.sheetsPollIntervalMs);

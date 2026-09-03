@@ -100,7 +100,7 @@ export function triggerMachineWebhook(params: { machine_code: string; qr_code_id
     timeout: GATE_TIMEOUT_MS,
   };
 
-  // Fire async, do not await — non-blocking by design
+  // Fire async, do not await - non-blocking by design
   setImmediate(() => {
     const req = http.request(options, (res) => {
       let data = "";

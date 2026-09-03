@@ -26,12 +26,12 @@ const queryClient = new QueryClient({
 
 const AUTH_GATE_SCRIPT = `(function(){
   var p=location.pathname;
-  // Public login paths — no gate
+  // Public login paths - no gate
   if(p==='/login'||p.indexOf('/login/')===0||p==='/station/login'){
     document.documentElement.classList.remove('auth-pending');
     return;
   }
-  // Station dashboard — check station token before revealing
+  // Station dashboard - check station token before revealing
   if(p.indexOf('/station/dashboard')===0){
     if(!localStorage.getItem('sugity-station-token')){
       location.replace('/station/login');return;
@@ -39,7 +39,7 @@ const AUTH_GATE_SCRIPT = `(function(){
     document.documentElement.classList.remove('auth-pending');
     return;
   }
-  // Root path '/' — allowed for guests (Resin/Workstation portal) & admin/op (StockScan)
+  // Root path '/' - allowed for guests (Resin/Workstation portal) & admin/op (StockScan)
   if(p==='/'){
     try{
       var tk0=localStorage.getItem('sugity-auth-token');
@@ -69,7 +69,7 @@ const AUTH_GATE_SCRIPT = `(function(){
     localStorage.removeItem('sugity-auth-user');
     location.replace('/login');return;
   }
-  // Role gate — usertv can only see /tv
+  // Role gate - usertv can only see /tv
   var isTv=p==='/tv'||p.indexOf('/tv')===0;
   if(!isTv){
     try{
@@ -82,7 +82,7 @@ const AUTH_GATE_SCRIPT = `(function(){
       }
     }catch(e){}
   }
-  // Auth passed — reveal body
+  // Auth passed - reveal body
   document.documentElement.classList.remove('auth-pending');
 })();`;
 

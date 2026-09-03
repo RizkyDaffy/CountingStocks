@@ -15,7 +15,7 @@ COPY . .
 RUN npm run build
 
 #    Stage 2: Production runner          
-# Slim image — no devDependencies, no source, no build tooling.
+# Slim image - no devDependencies, no source, no build tooling.
 FROM node:22-alpine AS runner
 
 WORKDIR /app
@@ -28,7 +28,7 @@ RUN npm ci --omit=dev --ignore-scripts
 COPY --from=builder /app/dist ./dist
 
 # Copy the Express API server source (run with tsx at runtime)
-# tsx is listed as a devDep so we need it explicitly — copy from builder
+# tsx is listed as a devDep so we need it explicitly - copy from builder
 COPY --from=builder /app/node_modules/.bin/tsx /usr/local/bin/tsx
 COPY --from=builder /app/node_modules/tsx ./node_modules/tsx
 COPY microservices/server ./microservices/server
@@ -46,7 +46,7 @@ COPY .env.example .env.example
 # 4000 = Express API server (backend)
 EXPOSE 3000 4000
 
-# Health-check — pings the Express health endpoint every 30 s
+# Health-check - pings the Express health endpoint every 30 s
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
   CMD wget -qO- http://localhost:4000/api/health || exit 1
 

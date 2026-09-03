@@ -42,7 +42,7 @@ services:
       - "${APP_PORT:-3000}:3000" # Vite SSR / TanStack Start
       - "${API_PORT:-4000}:4000" # Express API
     environment:
-      # Database — overridden by .env or docker compose --env-file
+      # Database - overridden by .env or docker compose --env-file
       DB_HOST: ${DB_HOST:-127.0.0.1}
       DB_PORT: 3306
       DB_USER: ${DB_USER:-root}

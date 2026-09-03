@@ -1,4 +1,4 @@
-# Docker build cache — never copy these into the image
+# Docker build cache - never copy these into the image
 node_modules
 **/node_modules
 dist
@@ -18,7 +18,7 @@ npm-debug.log*
 # Unrelated services (not part of this image; google-sheet carries ~330MB node_modules)
 microservices/google-sheet
 
-# Secrets — never bake into image layers
+# Secrets - never bake into image layers
 .env
 .env.local
 .env.*.local

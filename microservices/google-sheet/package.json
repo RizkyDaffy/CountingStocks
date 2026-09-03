@@ -2,7 +2,7 @@
   "name": "google-sheet-service",
   "version": "0.1.0",
   "private": true,
-  "description": "Google Sheets integration microservice — Control-Stock",
+  "description": "Google Sheets integration microservice - Control-Stock",
   "license": "UNLICENSED",
   "engines": {
     "node": ">=20"

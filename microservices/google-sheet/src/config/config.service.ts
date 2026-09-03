@@ -88,7 +88,7 @@ export class AppConfigService {
       keyPathRaw && keyPathRaw.trim() !== "" ? resolveKeyPath(keyPathRaw.trim()) : undefined;
     if (keyPathRaw && !this.googleKeyPath) {
       new Logger(AppConfigService.name).warn(
-        `GOOGLE_SERVICE_ACCOUNT_KEY_PATH="${keyPathRaw}" not found on disk — MCP status will report disconnected.`,
+        `GOOGLE_SERVICE_ACCOUNT_KEY_PATH="${keyPathRaw}" not found on disk - MCP status will report disconnected.`,
       );
     }
 

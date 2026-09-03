@@ -76,7 +76,7 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, docConfig);
     SwaggerModule.setup("api/docs", app, document, {
       swaggerOptions: { persistAuthorization: false, displayRequestDuration: true },
-      customSiteTitle: "Google Sheet Service — API Docs",
+      customSiteTitle: "Google Sheet Service - API Docs",
     });
   }
 

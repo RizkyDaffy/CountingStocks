@@ -86,7 +86,7 @@ export function UpdateBanner() {
       <Dialog open={changelogOpen} onOpenChange={setChangelogOpen}>
         <DialogContent className="max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Changelog — v{info.latest}</DialogTitle>
+            <DialogTitle>Changelog - v{info.latest}</DialogTitle>
             <DialogDescription>
               {latestRelease?.published_at
                 ? new Date(latestRelease.published_at).toLocaleString()

@@ -4,9 +4,9 @@ All notable changes to this project are documented in this file.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning follows [Semantic Versioning](https://semver.org/):
 
-- MAJOR — non-reversible DB migration or breaking API change
-- MINOR — new feature, reversible migration
-- PATCH — bug fix, no migration
+- MAJOR - non-reversible DB migration or breaking API change
+- MINOR - new feature, reversible migration
+- PATCH - bug fix, no migration
 
 ## [1.3.0] - 2026-09-03
 

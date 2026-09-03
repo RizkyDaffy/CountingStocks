@@ -23,7 +23,7 @@ import { selfUpdatePhaseLabel, useSelfUpdate } from "@/hooks/use-self-update";
 export const Route = createFileRoute("/updates")({
   head: () => ({
     meta: [
-      { title: "Version & Update — Sugity Creatives" },
+      { title: "Version & Update - Sugity Creatives" },
       { name: "description", content: "Informasi versi aplikasi dan pembaruan yang tersedia." },
     ],
   }),
@@ -113,7 +113,7 @@ function UpdatesPage() {
 
   const updateAvailable = isUpdateAvailable(info);
   const lastCheck =
-    dataUpdatedAt > 0 ? format(new Date(dataUpdatedAt), "dd MMM yyyy, HH:mm:ss") : "—";
+    dataUpdatedAt > 0 ? format(new Date(dataUpdatedAt), "dd MMM yyyy, HH:mm:ss") : "-";
 
   const newer = (info?.releases ?? []).filter(
     (r) => compareSemver(r.tag.replace(/^v/, ""), info?.current ?? "0.0.0") > 0,

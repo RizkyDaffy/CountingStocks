@@ -2,13 +2,13 @@
  * BCP (Business Continuity Plan) Routes
  *
  * /api/bcp
- *   GET  /            — list all bcp_links
- *   GET  /parts       — all master_parts (for the part selector)
- *   GET  /sheets      — proxy: list sheets from gsheet microservice
- *   GET  /sheets/:key/rows — proxy: rawValues for one sheet tab (for part matching)
- *   POST /            — create/update a link (upsert by part_id)
- *   POST /sync        — trigger immediate background sync
- *   DELETE /:id       — remove a link
+ *   GET  /            - list all bcp_links
+ *   GET  /parts       - all master_parts (for the part selector)
+ *   GET  /sheets      - proxy: list sheets from gsheet microservice
+ *   GET  /sheets/:key/rows - proxy: rawValues for one sheet tab (for part matching)
+ *   POST /            - create/update a link (upsert by part_id)
+ *   POST /sync        - trigger immediate background sync
+ *   DELETE /:id       - remove a link
  */
 
 import { Router } from "express";
@@ -32,7 +32,7 @@ async function proxyGsheet(path: string): Promise<{ ok: boolean; data: unknown }
   }
 }
 
-// GET /api/bcp — current links
+// GET /api/bcp - current links
 router.get("/", async (_req, res) => {
   try {
     const [rows] = await pool.query<RowDataPacket[]>(
@@ -44,7 +44,7 @@ router.get("/", async (_req, res) => {
   }
 });
 
-// GET /api/bcp/parts — all master_parts for selection
+// GET /api/bcp/parts - all master_parts for selection
 router.get("/parts", async (req, res) => {
   try {
     const search = (req.query.search as string) || "";
@@ -62,7 +62,7 @@ router.get("/parts", async (req, res) => {
   }
 });
 
-// GET /api/bcp/sheets — list all sheet tabs from gsheet service
+// GET /api/bcp/sheets - list all sheet tabs from gsheet service
 router.get("/sheets", async (_req, res) => {
   const { ok, data } = await proxyGsheet("sheets/analyze");
   if (!ok) {
@@ -80,7 +80,7 @@ router.get("/sheets", async (_req, res) => {
   res.json({ success: true, data: sheets });
 });
 
-// GET /api/bcp/sheets/:key/rows — rawValues for a single sheet tab
+// GET /api/bcp/sheets/:key/rows - rawValues for a single sheet tab
 router.get("/sheets/:key/rows", async (req, res) => {
   const { ok, data } = await proxyGsheet(`sheets/${encodeURIComponent(req.params.key)}`);
   if (!ok) {
@@ -94,7 +94,7 @@ router.get("/sheets/:key/rows", async (req, res) => {
   res.json({ success: true, data: payload.sheet?.rawValues ?? [] });
 });
 
-// POST /api/bcp — upsert link
+// POST /api/bcp - upsert link
 router.post("/", async (req, res) => {
   try {
     const { partId, partName, sheetId, sheetTitle, rowKey } = req.body as {
@@ -137,7 +137,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// POST /api/bcp/sync — manually trigger sync
+// POST /api/bcp/sync - manually trigger sync
 router.post("/sync", async (_req, res) => {
   try {
     await syncOnce();
@@ -150,7 +150,7 @@ router.post("/sync", async (_req, res) => {
   }
 });
 
-// DELETE /api/bcp/:id — remove link
+// DELETE /api/bcp/:id - remove link
 router.delete("/:id", async (req, res) => {
   try {
     const [result] = await pool.query<ResultSetHeader>("DELETE FROM bcp_links WHERE id = ?", [

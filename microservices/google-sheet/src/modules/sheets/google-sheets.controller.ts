@@ -56,7 +56,7 @@ export class GoogleSheetsController {
   @ApiOperation({
     summary: "Get one worksheet by title or sheetId",
     description:
-      'Same data as /analyze but scoped to a single tab. Key matches sheet title (exact, then case-insensitive) or numeric sheetId/gid, e.g. /api/v1/sheets/F2 or /api/v1/sheets/101369368. Served from the live cache. Note: a tab literally titled "analyze" is shadowed by the analyze route — reach it by id.',
+      'Same data as /analyze but scoped to a single tab. Key matches sheet title (exact, then case-insensitive) or numeric sheetId/gid, e.g. /api/v1/sheets/F2 or /api/v1/sheets/101369368. Served from the live cache. Note: a tab literally titled "analyze" is shadowed by the analyze route - reach it by id.',
   })
   @ApiParam({ name: "key", description: "Sheet title or numeric sheetId/gid" })
   @ApiOkResponse({ type: SheetSnapshotResponseDto })

@@ -104,7 +104,7 @@ export async function syncOnce(): Promise<void> {
 
       for (const link of sheetLinks) {
         const total = extractStock(rawValues, link.row_key);
-        if (total === null) continue; // row missing in sheet — don't overwrite
+        if (total === null) continue; // row missing in sheet - don't overwrite
 
         try {
           const bcpBatchId = `BCP-${link.part_id}`;

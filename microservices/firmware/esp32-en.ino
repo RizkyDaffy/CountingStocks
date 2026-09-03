@@ -5,12 +5,12 @@
 // ==========================================
 //
 // ==========================================
-// v6.2 ADD — PATCH NOTES (webhook/network integration)
+// v6.2 ADD - PATCH NOTES (webhook/network integration)
 //   - Everything from v6.1 above and below this note is BYTE-FOR-BYTE
 //     untouched: no state, timing, relay, or LS logic was modified.
 //   - This patch ONLY adds: NVS-based provisioning, a WiFi + TCP client to
 //     @betogate, and a network trigger that calls the EXISTING handleScan()
-//     function — exactly as if "scan" had been typed over Serial.
+//     function - exactly as if "scan" had been typed over Serial.
 //   - The Serial "scan" command path in loop() is left fully intact for
 //     local/bench testing; it is simply no longer the only trigger source.
 //   - Integration points (search for "v6.2 ADD" comments below):
@@ -22,7 +22,7 @@
 // ==========================================
 
 // ==========================================
-// v6.3.2 ADD — PATCH NOTES (silent polling)
+// v6.3.2 ADD - PATCH NOTES (silent polling)
 //   - ONLY CHANGE: all Serial.print/println calls inside the HTTP polling
 //     path (pollWebhookHttp + its failure/error branches) are now gated
 //     behind a single HTTP_DEBUG_VERBOSE flag, default false.
@@ -32,7 +32,7 @@
 //     before. Only the console output was removed.
 //   - Why this helps: Serial.print() at 115200 baud briefly blocks the
 //     CPU while the UART TX buffer drains. Doing 4-5 of those every
-//     500 ms was the actual source of "heavy lifting" — not the polling
+//     500 ms was the actual source of "heavy lifting" - not the polling
 //     itself. Removing them makes loop() faster/more consistent without
 //     touching timing, state machine, relay, or LS logic.
 //   - To get the logs back for debugging, just set HTTP_DEBUG_VERBOSE
@@ -121,7 +121,7 @@ const unsigned long WIFI_CONNECT_TIMEOUT_MS = 15000;
 unsigned long lastHttpPollMs    = 0;
 const unsigned long HTTP_POLL_INTERVAL_MS = 500;  // poll every 500 ms (UNCHANGED)
 
-// v6.4 ADD: multi-QR support — listen_qrs stored as comma-delimited NVS string
+// v6.4 ADD: multi-QR support - listen_qrs stored as comma-delimited NVS string
 // rizky: MAX_LISTEN_QRS=8 is sufficient for genba SOP. Upgrade to dynamic alloc if >8 parts/machine.
 #define MAX_LISTEN_QRS 8
 String cfgListenQrs[MAX_LISTEN_QRS];
@@ -149,7 +149,7 @@ void setRelay(int state, const char* reason) {
 // (no lock/gate hardware is wired to it). RELAY_ACTIVE = siren ON,
 // RELAY_RELEASE = siren OFF. It is driven ACTIVE only on the single
 // transition into STATE_ALARM, and RELEASE on every other transition
-// below (including boot) — see the setRelay() calls throughout.
+// below (including boot) - see the setRelay() calls throughout.
 
 void enterState(SystemState newState, const char* msg) {
   currentState = newState;
@@ -161,7 +161,7 @@ void enterState(SystemState newState, const char* msg) {
 }
 
 // ==========================================
-// --- v6.2 ADD: HELPERS (network layer only — does not call into
+// --- v6.2 ADD: HELPERS (network layer only - does not call into
 //     or alter any state-machine function except handleScan()) ---
 // ==========================================
 // v6.4: parse comma-delimited "qrs" NVS key into cfgListenQrs[]
@@ -254,12 +254,12 @@ void connectWiFiIfNeeded() {
   }
   wifiWasConnected = false;
 
-  // A begin() is already resolving — do NOT call begin() again yet.
+  // A begin() is already resolving - do NOT call begin() again yet.
   // Calling it mid-handshake is what causes:
   //   E (...) wifi:sta is connecting, cannot set config
   if (wifiConnectInProgress) {
     if (millis() - lastWifiAttempt < WIFI_CONNECT_TIMEOUT_MS) return;
-    // Attempt timed out — cleanly reset before allowing a fresh begin()
+    // Attempt timed out - cleanly reset before allowing a fresh begin()
     WiFi.disconnect(true, true);
     wifiConnectInProgress = false;
   }
@@ -278,7 +278,7 @@ void connectWiFiIfNeeded() {
 // Polls GET /iot/{mc}/{qr} on the Express backend (port 4000).
 // On rising edge (false→true) calls handleScan(), then resets via POST /reset.
 // The webhook path stored in NVS ("/webhook/mc2/QR-1003") is parsed to extract
-// mc and qr segments — no NVS schema change needed.
+// mc and qr segments - no NVS schema change needed.
 // ==========================================
 
 /**
@@ -339,11 +339,11 @@ void httpPost(const char* path) {
 }
 
 /**
- * Core HTTP polling — called from maintainGateNetwork() every loop().
+ * Core HTTP polling - called from maintainGateNetwork() every loop().
  * Detects rising edge on server scanned flag and calls the existing handleScan().
  * Resets state immediately before calling handleScan() to prevent double-trigger.
  * v6.3.2: All status/debug Serial output gated behind HTTP_DEBUG_VERBOSE.
- *         Poll cadence (HTTP_POLL_INTERVAL_MS) and trigger logic are UNCHANGED —
+ *         Poll cadence (HTTP_POLL_INTERVAL_MS) and trigger logic are UNCHANGED -
  *         only the console noise was removed to reduce per-poll UART blocking.
  */
 unsigned long lastDebugPrintMs = 0;
@@ -365,7 +365,7 @@ void pollWebhookHttp() {
   if (now - lastHttpPollMs < HTTP_POLL_INTERVAL_MS) return;
   lastHttpPollMs = now;
 
-  // v6.4: iterate all provisioned QRs — same handleScan() call, same rising-edge logic
+  // v6.4: iterate all provisioned QRs - same handleScan() call, same rising-edge logic
   if (cfgListenQrCount == 0) {
     if (HTTP_DEBUG_VERBOSE && (now - lastDebugPrintMs > DEBUG_PRINT_INTERVAL_MS)) {
       lastDebugPrintMs = now;
@@ -396,7 +396,7 @@ void pollWebhookHttp() {
       Serial.println(pollPath);
     }
 
-    body = "";  // clear without dealloc — reserve keeps the buffer
+    body = "";  // clear without dealloc - reserve keeps the buffer
     if (!httpGet(pollPath, body)) {
       if (debugNow) {
         Serial.print("[HTTP] FAILED to connect to ");
@@ -422,7 +422,7 @@ void pollWebhookHttp() {
     bool scanned = doc["scanned"] | false;
 
     if (scanned && !lastScannedState[i]) {
-      // Scan event — unconditional log (low-frequency, real event)
+      // Scan event - unconditional log (low-frequency, real event)
       Serial.print("[HTTP] >>> SCAN SIGNAL DETECTED on ");
       Serial.println(pollPath);
       snprintf(resetPath, sizeof(resetPath), "%s/reset", pollPath);
@@ -478,7 +478,7 @@ void setup() {
     Serial.println("[STATUS] Ready: Pallet sedang di luar.");
   }
 
-  // v6.2 ADD — appended only, nothing above this line was changed
+  // v6.2 ADD - appended only, nothing above this line was changed
   runSerialProvisioningIfNeeded();
 }
 
@@ -558,7 +558,7 @@ void loop() {
     Serial.println("[RELAY] 5s scan pulse complete. Relay OFF.");
   }
 
-  // v6.2 ADD — appended only, nothing above this line was changed
+  // v6.2 ADD - appended only, nothing above this line was changed
   maintainGateNetwork();
 }
 

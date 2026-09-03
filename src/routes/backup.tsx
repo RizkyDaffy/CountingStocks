@@ -37,7 +37,7 @@ export const Route = createFileRoute("/backup")({
   }),
   head: () => ({
     meta: [
-      { title: "Business Continuity Plan — Sugity Creatives" },
+      { title: "Business Continuity Plan - Sugity Creatives" },
       { name: "description", content: "Koneksikan part ke Google Sheet sebagai sumber data stok." },
     ],
   }),
@@ -544,7 +544,7 @@ function StepRows({
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">
-                  Auto Suggest — Matched 100%
+                  Auto Suggest - Matched 100%
                 </span>
               </div>
               <p className="text-sm font-semibold text-foreground truncate mt-0.5">

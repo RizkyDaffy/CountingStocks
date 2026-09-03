@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>🚪 Karakuri Gate — Panel Admin</title>
+    <title>🚪 Karakuri Gate - Panel Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
@@ -634,7 +634,7 @@
     <div class="header">
       <div class="header-icon">🚪</div>
       <div>
-        <div class="header-title">Karakuri Gate — Panel Admin</div>
+        <div class="header-title">Karakuri Gate - Panel Admin</div>
         <div class="header-sub">Manajemen Perangkat ESP32 &amp; Hak Akses Pintu</div>
       </div>
       <div class="header-status" id="serverStatus">
@@ -690,7 +690,7 @@
               <div class="section-title" style="margin: 0">➕ Daftarkan Perangkat Manual</div>
             </div>
             <div class="alert alert-info">
-              💡 Cara lebih mudah: gunakan tab <strong>✨ Provisioning QR</strong> — sistem akan
+              💡 Cara lebih mudah: gunakan tab <strong>✨ Provisioning QR</strong> - sistem akan
               otomatis membuat Device ID dan Token, lalu Anda tinggal scan QR ke ESP32.
             </div>
             <div class="form-grid">
@@ -720,8 +720,8 @@
               <div class="form-group">
                 <label>Arah Pintu <span style="color: #fc8181">*</span></label>
                 <select id="dev_direction" onchange="updateFwPreview()">
-                  <option value="in">IN — Pintu Masuk</option>
-                  <option value="out">OUT — Pintu Keluar</option>
+                  <option value="in">IN - Pintu Masuk</option>
+                  <option value="out">OUT - Pintu Keluar</option>
                 </select>
               </div>
               <div class="form-group">
@@ -970,7 +970,7 @@
               1. Install library: ESPAsyncWebServer, AsyncTCP, ArduinoJson via Arduino Library
               Manager<br />
               2. Buka <code>firmware/karakuri_gate_esp32/karakuri_gate_esp32.ino</code><br />
-              3. <strong>Tidak perlu edit apapun</strong> — config per-unit dilakukan via
+              3. <strong>Tidak perlu edit apapun</strong> - config per-unit dilakukan via
               Provisioning QR<br />
               4. Upload ke ESP32 → selesai, satu binary untuk semua unit!
             </div>
@@ -1162,11 +1162,11 @@
               (d) => `
       <tr>
         <td><code style="font-size:13px;color:#90cdf4">${esc(d.id)}</code></td>
-        <td>${esc(d.machine_name || d.machine_id || "—")}</td>
+        <td>${esc(d.machine_name || d.machine_id || "-")}</td>
         <td><span class="pill pill-${d.direction}"><span class="pill-dot"></span>${d.direction.toUpperCase()}</span></td>
-        <td>${esc(d.location_label || "—")}</td>
+        <td>${esc(d.location_label || "-")}</td>
         <td><span class="pill pill-${d.connection_status}"><span class="pill-dot"></span>${d.connection_status}</span></td>
-        <td style="font-size:12px;color:#718096">${d.last_seen ? fmtDate(d.last_seen) : "—"}</td>
+        <td style="font-size:12px;color:#718096">${d.last_seen ? fmtDate(d.last_seen) : "-"}</td>
         <td>${d.is_active ? "✅" : "❌"}</td>
         <td>
           <div style="display:flex;gap:6px">
@@ -1399,7 +1399,7 @@
           sel.innerHTML = qrs
             .map(
               (q) =>
-                `<option value="${esc(q.qr_id)}">${esc(q.qr_id)} — ${esc(q.part_name || q.batch_id)}</option>`,
+                `<option value="${esc(q.qr_id)}">${esc(q.qr_id)} - ${esc(q.part_name || q.batch_id)}</option>`,
             )
             .join("");
         } catch (err) {
@@ -1535,7 +1535,7 @@
           devices
             .map(
               (d) =>
-                `<option value="${esc(d.id)}" ${d.id === cur ? "selected" : ""}>${esc(d.id)} (${d.direction.toUpperCase()}) — ${esc(d.location_label || d.machine_id)}</option>`,
+                `<option value="${esc(d.id)}" ${d.id === cur ? "selected" : ""}>${esc(d.id)} (${d.direction.toUpperCase()}) - ${esc(d.location_label || d.machine_id)}</option>`,
             )
             .join("");
         if (cur) loadPrivileges();
@@ -1573,8 +1573,8 @@
               (r) => `
       <tr>
         <td><code style="color:#90cdf4">${r.user_id}</code></td>
-        <td>${esc(r.username || "—")}</td>
-        <td><span class="pill" style="background:#1e2535;color:#a0aec0">${esc(r.role || "—")}</span></td>
+        <td>${esc(r.username || "-")}</td>
+        <td><span class="pill" style="background:#1e2535;color:#a0aec0">${esc(r.role || "-")}</span></td>
         <td style="font-size:12px;color:#718096">${fmtDate(r.granted_at)}</td>
         <td><button class="btn btn-danger btn-sm" onclick="revokePrivilege('${esc(deviceId)}',${r.user_id})">🗑️ Cabut</button></td>
       </tr>`,
@@ -1629,7 +1629,7 @@
           `<span class="fw-define">#define</span> <span class="fw-key">GATE_OPEN_DURATION_MS</span>  <span class="fw-string">${dur}</span>  <span class="fw-comment">// ms pintu terbuka (default)</span>\n` +
           `<span class="fw-define">#define</span> <span class="fw-key">FACTORY_RESET_PIN</span>       <span class="fw-string">0</span>    <span class="fw-comment">// BOOT button (tahan 5s = factory reset)</span>\n\n` +
           `<span class="fw-comment">// Semua nilai lain (Device ID, Token, WiFi, Server IP) diisi via\n` +
-          `// Provisioning QR — tidak perlu hardcode di sini.</span>`;
+          `// Provisioning QR - tidak perlu hardcode di sini.</span>`;
       }
 
       function copyFirmware() {
@@ -1669,10 +1669,10 @@
       <tr>
         <td style="font-size:12px;color:#718096;white-space:nowrap">${fmtDate(r.dispatched_at)}</td>
         <td><code style="color:#90cdf4">${r.user_id}</code></td>
-        <td style="font-size:12px">${esc(r.esp32_device_id || "—")}</td>
-        <td><span class="pill pill-${r.direction}"><span class="pill-dot"></span>${r.direction?.toUpperCase() || "—"}</span></td>
+        <td style="font-size:12px">${esc(r.esp32_device_id || "-")}</td>
+        <td><span class="pill pill-${r.direction}"><span class="pill-dot"></span>${r.direction?.toUpperCase() || "-"}</span></td>
         <td><span style="color:${rc[r.result] || "#a0aec0"};font-weight:600;font-size:13px">${esc(r.result)}</span></td>
-        <td style="font-size:12px;color:#718096">${esc(r.result_detail || "—")}</td>
+        <td style="font-size:12px;color:#718096">${esc(r.result_detail || "-")}</td>
       </tr>`,
             )
             .join("");
@@ -1689,7 +1689,7 @@
           .replace(/"/g, "&quot;");
       }
       function fmtDate(s) {
-        if (!s) return "—";
+        if (!s) return "-";
         return new Date(s).toLocaleString("id-ID", {
           day: "2-digit",
           month: "short",

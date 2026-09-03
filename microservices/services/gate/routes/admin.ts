@@ -300,7 +300,7 @@ router.post("/devices/generate-provision-qr", requireAdmin, async (req, res) => 
       [device_id, machine_id, direction, location_label ?? "", auth_token],
     );
 
-    // Build provisioning URI — parsed by ESP32 captive portal QR input box
+    // Build provisioning URI - parsed by ESP32 captive portal QR input box
     const qr_payload = [
       `riski://provision?server=${encodeURIComponent(gate_server_ip)}`,
       `port=${gate_server_port}`,

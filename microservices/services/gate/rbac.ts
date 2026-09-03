@@ -83,7 +83,7 @@ export async function dispatchGateOpen(params: GateOpenParams): Promise<GateOpen
     return { success: false, statusCode: 503, error: msg, requestId, esp32DeviceId };
   }
 
-  // [Step 3] RBAC — check user_id has privilege to trigger this esp32_device_id
+  // [Step 3] RBAC - check user_id has privilege to trigger this esp32_device_id
   const [privRows] = await pool.query<mysql.RowDataPacket[]>(
     `SELECT id FROM esp32_user_privileges
      WHERE esp32_device_id = ? AND user_id = ?
@@ -132,7 +132,7 @@ export async function dispatchGateOpen(params: GateOpenParams): Promise<GateOpen
 
   log("gate_dispatch_sent", { ...baseLog, esp32DeviceId, requestId });
 
-  // Log the dispatch — ACK will update this row later when ESP32 responds
+  // Log the dispatch - ACK will update this row later when ESP32 responds
   await writeCommandLog(pool, { ...baseLog, esp32DeviceId, result: "sent", detail: null });
 
   return {
@@ -176,7 +176,7 @@ async function writeCommandLog(
       ],
     );
   } catch (err) {
-    // Non-critical — log locally but don't throw
+    // Non-critical - log locally but don't throw
     console.error("gate_log_write_error", (err as Error).message);
   }
 }

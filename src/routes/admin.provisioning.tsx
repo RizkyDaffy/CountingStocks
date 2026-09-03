@@ -73,7 +73,7 @@ function Toast({
 }
 
 function buildWebhookPath(machineCode: string, selectedQrs: Set<string>): string {
-  if (!machineCode) return "—";
+  if (!machineCode) return "-";
   const mc = machineCode.toLowerCase().replace(/[^a-z0-9]/g, "");
   if (selectedQrs.size === 1) {
     const qr = encodeURIComponent(Array.from(selectedQrs)[0]);
@@ -82,7 +82,7 @@ function buildWebhookPath(machineCode: string, selectedQrs: Set<string>): string
   if (selectedQrs.size > 1) {
     return `/webhook/${mc}`;
   }
-  return `—`;
+  return `-`;
 }
 function ProvisioningPage() {
   const [machines, setMachines] = useState<MachineItem[]>([]);
@@ -231,7 +231,7 @@ function ProvisioningPage() {
         ? `/webhook/${mcNormalized}/${encodeURIComponent(listenQrsArr[0])}`
         : `/webhook/${mcNormalized}`;
 
-    // v4 provisioning payload — matches @karakurigate NVS schema exactly
+    // v4 provisioning payload - matches @karakurigate NVS schema exactly
     const payload = {
       cmd: "config",
       wifi_ssid: ssid,
@@ -289,7 +289,7 @@ function ProvisioningPage() {
 
   const webhookPreview = selectedMachine
     ? buildWebhookPath(selectedMachine.machine_code, selectedQrs)
-    : "—";
+    : "-";
 
   const isWebhookQrScoped = selectedQrs.size === 1 && !!selectedMachine;
   const isWebhookMachineLevel = selectedQrs.size > 1 && !!selectedMachine;
@@ -387,7 +387,7 @@ function ProvisioningPage() {
                   Pilih QR Codes
                   {selectedMachine && (
                     <span className="text-xs font-normal text-muted-foreground">
-                      — {selectedMachine.machine_code}
+                      - {selectedMachine.machine_code}
                     </span>
                   )}
                 </h2>
@@ -468,7 +468,7 @@ function ProvisioningPage() {
             {/* Live webhook preview */}
             <div
               className={`rounded-xl border px-4 py-3 text-xs font-mono flex items-center gap-2 ${
-                webhookPreview !== "—"
+                webhookPreview !== "-"
                   ? isWebhookQrScoped
                     ? "border-emerald-500/30 bg-emerald-500/5 text-emerald-400"
                     : "border-amber-500/30 bg-amber-500/5 text-amber-400"

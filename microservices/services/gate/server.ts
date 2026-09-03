@@ -223,7 +223,7 @@ function handleDeviceConnection(socket: net.Socket) {
           timestamp: msg.timestamp,
         });
 
-        // v6.2-retro ADD: ESP32 has consumed the OPEN_GATE command — reset
+        // v6.2-retro ADD: ESP32 has consumed the OPEN_GATE command - reset
         // scanned state immediately so the next cycle starts fresh.
         const ackConn = connections.get(deviceId);
         if (ackConn?.webhookPath) {
@@ -338,7 +338,7 @@ const httpServer = http.createServer(async (req, res) => {
       res.end(html);
     } catch {
       res.writeHead(503, { "Content-Type": "text/plain" });
-      res.end("UI not found — ensure services/gate/ui/index.html exists");
+      res.end("UI not found - ensure services/gate/ui/index.html exists");
     }
     return;
   }
@@ -424,7 +424,7 @@ const httpServer = http.createServer(async (req, res) => {
         }
       }
 
-      // Always 200 — state is set for HTTP-polling ESP32 regardless of TCP
+      // Always 200 - state is set for HTTP-polling ESP32 regardless of TCP
       res.writeHead(200, { "Access-Control-Allow-Origin": "*" });
       res.end(
         JSON.stringify({
