@@ -45,9 +45,10 @@ jobs:
       - name: Extract changelog section for this tag
         id: changelog
         run: |
+          node scripts/extract-changelog.js "${GITHUB_REF_NAME}" > /tmp/changelog-body.txt
           {
             echo 'body<<__EOF__'
-            node scripts/extract-changelog.js "${GITHUB_REF_NAME}"
+            cat /tmp/changelog-body.txt
             echo '__EOF__'
           } >> "$GITHUB_OUTPUT"
 
