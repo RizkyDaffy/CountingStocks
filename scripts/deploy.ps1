@@ -64,9 +64,13 @@ $env:IMAGE = $Image
 
 # ---------- Migration gate ----------
 Write-Host "[deploy] Running migration gate..."
+# Native stderr (compose warnings) must not become terminating PS errors while captured.
+$ErrorActionPreference = "Continue"
 $gateOutput = (docker compose run --rm --no-deps counting-stock npm run migrate:gate) 2>&1
+$gateExit = $LASTEXITCODE
+$ErrorActionPreference = "Stop"
 $gateOutput | ForEach-Object { Write-Host "  $_" }
-if ($LASTEXITCODE -ne 0) {
+if ($gateExit -ne 0) {
     if ("$gateOutput" -match "REFUSING") {
         Write-Host "[deploy] Migration gate REFUSED: database schema is newer than this image." -ForegroundColor Red
         Write-Host "[deploy] Deploy a version >= the DB schema version, or restore the DB from backup." -ForegroundColor Red

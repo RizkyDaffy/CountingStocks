@@ -8,6 +8,11 @@ Versioning follows [Semantic Versioning](https://semver.org/):
 - MINOR — new feature, reversible migration
 - PATCH — bug fix, no migration
 
+## [1.3.0] - 2026-09-03
+
+### Fixed
+- `microservices/google-sheet/tsconfig.json`: removed invalid `"ignoreDeprecations": "6.0"` (TS 5.9 only accepts `"5.0"`, or omit if `moduleResolution: "nodenext"` is used). Fixes `npm run start` / `nest start` error TS5103.
+
 ## [1.2.0] - 2026-09-03
 
 ### Added

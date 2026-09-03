@@ -6,6 +6,30 @@
 # Services: counting-stock (Node/frontend+backend), db (MySQL 8)
 
 services:
+  # MySQL-compatible database for the app. Internal only (no host port
+  # published, so it never fights XAMPP/other MySQL on 3306).
+  db:
+    image: mariadb:10.11
+    container_name: counting-stock-db
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+      MARIADB_DATABASE: ${DB_NAME:-outindb}
+      # App user: root is localhost-only in modern MariaDB images,
+      # the app/gate connect over the docker network so they need this user.
+      MARIADB_USER: ${DB_USER:-counting}
+      MARIADB_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
   counting-stock:
     build:
       context: .
@@ -46,6 +70,8 @@ services:
 
 volumes:
   app-logs:
+    driver: local
+  db-data:
     driver: local
 
 networks:
