@@ -8,6 +8,13 @@ Versioning follows [Semantic Versioning](https://semver.org/):
 - MINOR — new feature, reversible migration
 - PATCH — bug fix, no migration
 
+## [1.1.0] - 2026-09-03
+
+### Added
+- New "Version & Update" page (`/updates`): shows installed version, update availability, last check time, new version details, and full release history.
+- "Version & Update" entry in the Management sidebar section.
+- Manual "Periksa Update" (check for update) action on the updates page.
+
 ## [1.0.0] - 2026-09-02
 
 ### Added
