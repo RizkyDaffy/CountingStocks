@@ -1,15 +1,6 @@
 import { useState, useCallback } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  Plus,
-  Pencil,
-  Trash2,
-  Save,
-  X,
-  Loader2,
-  AlertCircle,
-  Factory,
-} from "lucide-react";
+import { Plus, Pencil, Trash2, Save, X, Loader2, AlertCircle, Factory } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import {
   AlertDialog,
@@ -121,9 +112,7 @@ function FactoryPage() {
           <span className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
             Management
           </span>
-          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-            Factory Management
-          </h1>
+          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Factory Management</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Kelola daftar pabrik/factory beserta kode dan SC.
           </p>
@@ -158,9 +147,7 @@ function FactoryPage() {
                   <th className="border-b border-border px-3 py-3 font-medium">Nama</th>
                   <th className="border-b border-border px-3 py-3 font-medium">Kode</th>
                   <th className="border-b border-border px-3 py-3 font-medium">SC ID</th>
-                  <th className="border-b border-border px-3 py-3 font-medium text-right">
-                    Aksi
-                  </th>
+                  <th className="border-b border-border px-3 py-3 font-medium text-right">Aksi</th>
                 </tr>
               </thead>
               <tbody>
@@ -248,10 +235,7 @@ function FactoryPage() {
                   </tr>
                 ) : (
                   factories.map((item) => (
-                    <tr
-                      key={item.uuid}
-                      className="transition-smooth hover:bg-card-elevated/40"
-                    >
+                    <tr key={item.uuid} className="transition-smooth hover:bg-card-elevated/40">
                       <td className="border-b border-border/60 px-3 py-3.5 font-mono text-xs text-muted-foreground">
                         {item.uuid}
                       </td>
@@ -354,19 +338,13 @@ function FactoryPage() {
           </div>
         </section>
 
-        <AlertDialog
-          open={!!deletingItem}
-          onOpenChange={(o) => !o && setDeletingItem(null)}
-        >
+        <AlertDialog open={!!deletingItem} onOpenChange={(o) => !o && setDeletingItem(null)}>
           <AlertDialogContent className="rounded-xl border border-border-surface bg-surface-sidebar p-0 sm:max-w-md overflow-hidden text-foreground">
             <AlertDialogHeader className="px-6 pb-2 pt-6">
-              <AlertDialogTitle className="text-xl font-bold">
-                Hapus Factory
-              </AlertDialogTitle>
+              <AlertDialogTitle className="text-xl font-bold">Hapus Factory</AlertDialogTitle>
               <AlertDialogDescription className="text-sm text-muted-foreground mt-2">
-                Apakah kamu yakin untuk menghapus{" "}
-                <strong>{deletingItem?.factory_name}</strong>? Tindakan ini tidak
-                dapat dibatalkan.
+                Apakah kamu yakin untuk menghapus <strong>{deletingItem?.factory_name}</strong>?
+                Tindakan ini tidak dapat dibatalkan.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter className="bg-card-elevated px-6 py-4 flex flex-row justify-end gap-3 border-t border-border-surface">

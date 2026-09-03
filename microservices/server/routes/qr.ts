@@ -51,7 +51,7 @@ async function updateStock(
     "SELECT id, current_stock, unit_value FROM stock WHERE batch_id = ?",
     [batchId],
   );
-  if (rows.length === 0) return; 
+  if (rows.length === 0) return;
 
   const currentStock = Number(rows[0].current_stock);
   const uv = Number(rows[0].unit_value);
@@ -325,7 +325,6 @@ router.get("/by-part/:partId", async (req, res) => {
     );
 
     if (rows.length === 0) {
-      
       return res.json({ success: true, data: null });
     }
 
@@ -365,7 +364,7 @@ router.get("/info", async (req, res) => {
       partName: string;
       factoryOrigin: string;
       value: number;
-      machineOrigin?: string; 
+      machineOrigin?: string;
     };
 
     const { batchId, partName, factoryOrigin, value } = decoded;
@@ -477,7 +476,6 @@ router.post("/process", async (req, res) => {
             });
           }
         }
-        
       }
     }
     const [qrStateRows] = await conn.query(
@@ -592,7 +590,6 @@ router.post("/process", async (req, res) => {
       }
     } else {
     }
-
   } catch (err: unknown) {
     if ((err as Error).name === "JsonWebTokenError") {
       return res.status(401).json({ success: false, error: "Token QR Manipulasi / Invalid" });

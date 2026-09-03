@@ -249,9 +249,7 @@ function CreateMesinPage() {
                 <select
                   id="input-status"
                   value={machineStatus}
-                  onChange={(e) =>
-                    setMachineStatus(e.target.value as "active" | "inactive")
-                  }
+                  onChange={(e) => setMachineStatus(e.target.value as "active" | "inactive")}
                   className={SELECT}
                 >
                   <option value="active">Active</option>

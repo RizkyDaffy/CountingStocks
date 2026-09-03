@@ -29,7 +29,7 @@ async function run() {
     `CREATE TABLE IF NOT EXISTS factories (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)`,
   ];
 
-  for (let q of createTables) {
+  for (const q of createTables) {
     await c.query(q);
     console.log("Executed create table query");
   }
@@ -41,7 +41,7 @@ async function run() {
     "Factory A - Jakarta",
     "Factory B - Bandung",
   ];
-  for (let f of seedFactories) {
+  for (const f of seedFactories) {
     try {
       await c.query("INSERT INTO factories (name) VALUES (?)", [f]);
     } catch (e) {}

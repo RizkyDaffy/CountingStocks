@@ -13,6 +13,8 @@ interface JwtPayload {
   [key: string]: unknown;
 }
 
+// Express type augmentation requires the global namespace form.
+/* eslint-disable @typescript-eslint/no-namespace */
 declare global {
   namespace Express {
     interface Request {

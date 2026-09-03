@@ -217,10 +217,7 @@ function Section({
                 const machine = segments[0] || "-";
                 const qrId = segments[segments.length - 1] || "-";
                 return (
-                  <tr
-                    key={e.path}
-                    className="transition-smooth hover:bg-card-elevated/40"
-                  >
+                  <tr key={e.path} className="transition-smooth hover:bg-card-elevated/40">
                     <td className="border-b border-border/60 px-5 py-3.5">
                       <span className="font-mono text-[13px] font-bold text-blue-500 dark:text-blue-400">
                         {machine}
@@ -232,9 +229,7 @@ function Section({
                       </span>
                     </td>
                     <td className="border-b border-border/60 px-5 py-3.5">
-                      <span className="font-mono text-[12px] text-muted-foreground">
-                        {e.path}
-                      </span>
+                      <span className="font-mono text-[12px] text-muted-foreground">{e.path}</span>
                     </td>
                     <td className="border-b border-border/60 px-5 py-3.5 text-muted-foreground">
                       {timeAgo(e.ts)}

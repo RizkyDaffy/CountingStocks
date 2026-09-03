@@ -16,8 +16,7 @@
     "migrate": "tsx migrations/migrate.ts",
     "migrate:big-update": "tsx migrations/migrate-big-update.ts",
     "migrate:v2": "tsx migrations/migrate-v2.ts",
-    "migrate:gate": "tsx migrations/schema-gate.ts",
-    "setup:iris": "git clone --depth 1 --sparse https://github.com/RizkyDaffy/IRIS.git .iris-tmp && cd .iris-tmp && git sparse-checkout set SDK/JS && cd .. && npm install ./.iris-tmp/SDK/JS --install-links --legacy-peer-deps"
+    "migrate:gate": "tsx migrations/schema-gate.ts"
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.25.5",
@@ -48,7 +47,6 @@
     "@radix-ui/react-toggle": "^1.1.10",
     "@radix-ui/react-toggle-group": "^1.1.11",
     "@radix-ui/react-tooltip": "^1.2.8",
-    "@sugity/iris-node": "file:.iris-tmp/SDK/JS",
     "@tailwindcss/vite": "^4.2.1",
     "@tanstack/react-query": "^5.83.0",
     "@tanstack/react-router": "^1.168.0",

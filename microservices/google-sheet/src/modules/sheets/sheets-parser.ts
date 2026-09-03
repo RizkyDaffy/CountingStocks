@@ -9,7 +9,8 @@ import type {
 
 const KEY_COLS = [0, 1, 2]; // MACHINE / PART NAME / PART NUMBER
 
-const cellText = (cell: unknown): string => (cell === undefined || cell === null ? "" : String(cell).trim());
+const cellText = (cell: unknown): string =>
+  cell === undefined || cell === null ? "" : String(cell).trim();
 
 const isBlankRow = (row: unknown[] | undefined): boolean =>
   !row || row.every((c) => cellText(c) === "");
@@ -68,17 +69,24 @@ function mapRow(row: unknown[], headers: string[]): Record<string, unknown> {
  * banner detection -> dynamic header detection -> blank-row group splitting
  * -> forward-fill of key columns within groups -> padded JSON mapping.
  */
-export function parseSheet(title: string, sheetId: number | undefined, rawRows: unknown[][]): SheetAnalysisDto {
+export function parseSheet(
+  title: string,
+  sheetId: number | undefined,
+  rawRows: unknown[][],
+): SheetAnalysisDto {
   const totalRows = rawRows.length;
   const totalColumns = rawRows.reduce((max, r) => Math.max(max, r?.length ?? 0), 0);
-  const rawValues: string[][] = rawRows.map((r) => (r ?? []).map((c) => (c === undefined || c === null ? "" : String(c))));
+  const rawValues: string[][] = rawRows.map((r) =>
+    (r ?? []).map((c) => (c === undefined || c === null ? "" : String(c))),
+  );
 
   const headerIdx = findHeaderRowIndex(rawRows);
 
   const base = { sheetTitle: title, sheetId, rawValues };
 
   if (headerIdx === -1) {
-    const status: SheetStructureDto["status"] = totalRows === 0 || rawRows.every(isBlankRow) ? "empty" : "no_header_detected";
+    const status: SheetStructureDto["status"] =
+      totalRows === 0 || rawRows.every(isBlankRow) ? "empty" : "no_header_detected";
     const structure: SheetStructureDto = {
       status,
       totalGridRows: totalRows,

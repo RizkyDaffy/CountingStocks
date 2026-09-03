@@ -103,7 +103,6 @@ function StationDashboardPage() {
 
   const handleScan = useCallback(
     (raw: string) => {
-     
       if (cooldown) return;
       const token = extractToken(raw);
       if (!token) {
@@ -142,7 +141,7 @@ function StationDashboardPage() {
           onError: (err) => {
             // Error - play warning sound immediately when server responds
             playWarning();
-           if (err.message === "QR_NOT_ALLOWED") {
+            if (err.message === "QR_NOT_ALLOWED") {
               setPrivilegeError(true);
               setScanInput("");
               setTimeout(() => setPrivilegeError(false), 5000);

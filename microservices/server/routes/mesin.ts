@@ -62,10 +62,9 @@ router.post("/", async (req, res) => {
       ],
     );
 
-    const [newRow] = await pool.query<RowDataPacket[]>(
-      "SELECT * FROM mesin WHERE uuid = ?",
-      [machineUuid],
-    );
+    const [newRow] = await pool.query<RowDataPacket[]>("SELECT * FROM mesin WHERE uuid = ?", [
+      machineUuid,
+    ]);
 
     res.status(201).json({ success: true, data: newRow[0] });
   } catch (err: unknown) {
@@ -112,10 +111,9 @@ router.put("/:uuid", async (req, res) => {
       ],
     );
 
-    const [updatedRow] = await pool.query<RowDataPacket[]>(
-      "SELECT * FROM mesin WHERE uuid = ?",
-      [uuid],
-    );
+    const [updatedRow] = await pool.query<RowDataPacket[]>("SELECT * FROM mesin WHERE uuid = ?", [
+      uuid,
+    ]);
 
     res.json({ success: true, data: updatedRow[0] });
   } catch (err: unknown) {
@@ -130,10 +128,7 @@ router.patch("/:uuid/toggle", async (req, res) => {
       `UPDATE mesin SET machine_status = IF(machine_status = 'active', 'inactive', 'active') WHERE uuid = ?`,
       [uuid],
     );
-    const [row] = await pool.query<RowDataPacket[]>(
-      "SELECT * FROM mesin WHERE uuid = ?",
-      [uuid],
-    );
+    const [row] = await pool.query<RowDataPacket[]>("SELECT * FROM mesin WHERE uuid = ?", [uuid]);
     res.json({ success: true, data: row[0] });
   } catch (err: unknown) {
     res.status(500).json({ success: false, error: (err as Error).message });

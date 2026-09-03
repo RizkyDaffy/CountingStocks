@@ -187,7 +187,7 @@ function gracefulShutdown(signal: string) {
       console.log(
         JSON.stringify({ timestamp: new Date().toISOString(), event: "shutdown_complete" }),
       );
-    } catch { }
+    } catch {}
     process.exit(0);
   });
   setTimeout(() => process.exit(1), 10_000).unref();

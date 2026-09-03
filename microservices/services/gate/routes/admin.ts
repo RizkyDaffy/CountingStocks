@@ -283,7 +283,7 @@ router.post("/devices/generate-provision-qr", requireAdmin, async (req, res) => 
     );
     const seq = (Number(seqRows[0]?.cnt ?? 0) + 1).toString().padStart(3, "0");
     const device_id = `ESP-MC${machine_id}-${direction.toUpperCase()}-${seq}`;
-    const auth_token = crypto.randomBytes(32).toString("hex"); 
+    const auth_token = crypto.randomBytes(32).toString("hex");
 
     const gate_server_ip = server_ip || process.env.GATE_SERVER_IP || "192.168.1.100";
     const gate_server_port = Number(process.env.GATE_TCP_PORT) || 4000;

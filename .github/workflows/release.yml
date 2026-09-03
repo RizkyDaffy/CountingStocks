@@ -15,11 +15,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: "Provide IRIS SDK (file: dependency)"
-        run: |
-          git clone --depth 1 --sparse https://github.com/RizkyDaffy/IRIS.git .iris-tmp
-          git -C .iris-tmp sparse-checkout set SDK/JS
-
       - name: Compute image name
         run: |
           OWNER="${GITHUB_REPOSITORY_OWNER}"

@@ -40,7 +40,7 @@ function ViewStockPage() {
   return (
     <DashboardLayout>
       <div className="animate-in fade-in duration-300">
-        { }
+        {}
         <div className="mb-6 flex flex-col gap-1">
           <span className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
             Inventory
@@ -52,7 +52,7 @@ function ViewStockPage() {
           </p>
         </div>
 
-        { }
+        {}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <StatCard
             label="Total Units di Stock"
@@ -72,12 +72,12 @@ function ViewStockPage() {
           />
         </div>
 
-        { }
+        {}
         <section className="mt-6 rounded-3xl border border-border-surface bg-surface-section p-5 sm:p-7">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <h2 className="text-base font-semibold text-foreground">Stock Levels</h2>
             <div className="flex flex-wrap items-center gap-2">
-              { }
+              {}
               <div className="relative">
                 <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <input
@@ -88,7 +88,7 @@ function ViewStockPage() {
                   className="h-10 w-full rounded-full border border-border-surface bg-card-elevated pl-9 pr-4 text-sm outline-none transition-smooth focus:border-[#C05C30] sm:w-52"
                 />
               </div>
-              { }
+              {}
               <div className="relative">
                 <Filter className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <select
@@ -105,7 +105,7 @@ function ViewStockPage() {
                   ))}
                 </select>
               </div>
-              { }
+              {}
               <button
                 id="btn-refresh-stock"
                 onClick={() => refetch()}
@@ -124,7 +124,7 @@ function ViewStockPage() {
                   key={i}
                   className="rounded-2xl border border-border-surface bg-surface-elevated p-4 animate-pulse"
                 >
-                  { }
+                  {}
                   <div className="flex flex-wrap items-start justify-between gap-2">
                     <div className="min-w-0 space-y-1.5">
                       <div className="flex items-center gap-2">
@@ -138,7 +138,7 @@ function ViewStockPage() {
                       <div className="h-6 w-16 rounded-full bg-card-elevated" />
                     </div>
                   </div>
-                  { }
+                  {}
                   <div className="mt-3">
                     <div className="flex items-center justify-between mb-1.5">
                       <div className="h-2.5 w-20 rounded-full bg-card-elevated/70" />
@@ -146,7 +146,7 @@ function ViewStockPage() {
                     </div>
                     <div className="h-2 w-full rounded-full bg-card" />
                   </div>
-                  { }
+                  {}
                   <div className="mt-2 flex items-center justify-between">
                     <div className="h-2 w-28 rounded-full bg-card-elevated/50" />
                     <div className="h-2 w-24 rounded-full bg-card-elevated/50" />
@@ -168,7 +168,7 @@ function ViewStockPage() {
           </div>
         </section>
 
-        { }
+        {}
         <div className="mt-4 flex flex-wrap items-center gap-4 text-[11.5px] text-muted-foreground px-1">
           <span className="flex items-center gap-1.5">
             <span className="inline-block h-2.5 w-2.5 rounded-full bg-emerald-500" />
@@ -221,7 +221,7 @@ function StockCard({ row }: { row: StockRow }) {
   return (
     <div className="group rounded-2xl border border-border-surface bg-surface-elevated p-4 transition-smooth hover:bg-surface-hover">
       <div className="flex flex-wrap items-start justify-between gap-2">
-        { }
+        {}
         <div className="min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-sm font-semibold text-foreground truncate">{row.part_name}</span>
@@ -235,9 +235,9 @@ function StockCard({ row }: { row: StockRow }) {
           </div>
         </div>
 
-        { }
+        {}
         <div className="flex items-center gap-2 shrink-0">
-          { }
+          {}
           <div className={`flex h-8 w-8 items-center justify-center rounded-full ${statusColor}`}>
             <TrendIcon className="h-4 w-4" />
           </div>
@@ -300,8 +300,9 @@ function StatCard({
           {label}
         </span>
         <span
-          className={`flex h-9 w-9 items-center justify-center rounded-full ${accent ? "bg-destructive/15 text-destructive" : "bg-card-elevated text-foreground/80"
-            }`}
+          className={`flex h-9 w-9 items-center justify-center rounded-full ${
+            accent ? "bg-destructive/15 text-destructive" : "bg-card-elevated text-foreground/80"
+          }`}
         >
           <Icon className="h-4 w-4" />
         </span>

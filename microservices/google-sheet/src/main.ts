@@ -10,7 +10,10 @@ import { AppConfigService } from "./config/config.service";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: process.env.NODE_ENV === "production" ? ["log", "warn", "error"] : ["log", "warn", "error", "debug", "verbose", "fatal"],
+    logger:
+      process.env.NODE_ENV === "production"
+        ? ["log", "warn", "error"]
+        : ["log", "warn", "error", "debug", "verbose", "fatal"],
   });
 
   const config = app.get(AppConfigService);
@@ -21,7 +24,7 @@ async function bootstrap() {
     expressInstance.set("trust proxy", config.trustProxy);
   }
 
-  //    Security headers                   
+  //    Security headers
   app.use(
     helmet({
       // Swagger UI requires inline scripts; CSP relaxed only when docs enabled.
@@ -31,14 +34,14 @@ async function bootstrap() {
     }),
   );
 
-  //    HTTP parameter pollution guard  
+  //    HTTP parameter pollution guard
   app.use(hpp());
 
-  //    Request size limits   
+  //    Request size limits
   app.use(json({ limit: config.bodyLimit }));
   app.use(urlencoded({ extended: true, limit: config.bodyLimit }));
 
-  //    CORS: strict origin allowlist   
+  //    CORS: strict origin allowlist
   app.enableCors({
     origin: config.allowedOrigins,
     methods: ["GET", "POST"],
@@ -47,7 +50,7 @@ async function bootstrap() {
     maxAge: 600,
   });
 
-  //    Global validation: strip unknown, reject extra props   
+  //    Global validation: strip unknown, reject extra props
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -57,11 +60,11 @@ async function bootstrap() {
     }),
   );
 
-  //    API shape: /api/v1/*   
+  //    API shape: /api/v1/*
   app.setGlobalPrefix("api");
   app.enableVersioning({ type: VersioningType.URI, defaultVersion: "1" });
 
-  //    OpenAPI docs (opt-in, never exposed in production unless forced)   
+  //    OpenAPI docs (opt-in, never exposed in production unless forced)
   if (config.swaggerEnabled) {
     const docConfig = new DocumentBuilder()
       .setTitle("Google Sheet Service API")

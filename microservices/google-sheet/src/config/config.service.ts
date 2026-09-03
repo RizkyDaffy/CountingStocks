@@ -51,7 +51,7 @@ export class AppConfigService {
 
     const proxyHops = Number(this.configService.get("TRUST_PROXY") ?? 0);
     if (!Number.isInteger(proxyHops) || proxyHops < 0 || proxyHops > 10) {
-      throw new Error('FATAL: TRUST_PROXY must be an integer between 0 and 10.');
+      throw new Error("FATAL: TRUST_PROXY must be an integer between 0 and 10.");
     }
     this.trustProxy = proxyHops;
 
@@ -84,7 +84,8 @@ export class AppConfigService {
     );
 
     const keyPathRaw = this.configService.get<string>("GOOGLE_SERVICE_ACCOUNT_KEY_PATH");
-    this.googleKeyPath = keyPathRaw && keyPathRaw.trim() !== "" ? resolveKeyPath(keyPathRaw.trim()) : undefined;
+    this.googleKeyPath =
+      keyPathRaw && keyPathRaw.trim() !== "" ? resolveKeyPath(keyPathRaw.trim()) : undefined;
     if (keyPathRaw && !this.googleKeyPath) {
       new Logger(AppConfigService.name).warn(
         `GOOGLE_SERVICE_ACCOUNT_KEY_PATH="${keyPathRaw}" not found on disk — MCP status will report disconnected.`,

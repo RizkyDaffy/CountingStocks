@@ -371,7 +371,6 @@ function TvPage() {
   const slotAData = activeSlot === "A" ? getPageData(currentPage) : getPageData(nextPage);
   const slotBData = activeSlot === "B" ? getPageData(currentPage) : getPageData(nextPage);
 
-   
   useEffect(() => {
     if (totalPages <= 1) return;
     const timer = setInterval(() => {

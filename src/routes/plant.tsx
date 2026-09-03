@@ -1,15 +1,6 @@
 import { useState, useCallback } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  Plus,
-  Pencil,
-  Trash2,
-  Save,
-  X,
-  Loader2,
-  AlertCircle,
-  Link2,
-} from "lucide-react";
+import { Plus, Pencil, Trash2, Save, X, Loader2, AlertCircle, Link2 } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import {
   AlertDialog,
@@ -137,12 +128,8 @@ function PlantPage() {
                 <tr className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
                   <th className="border-b border-border px-3 py-3 font-medium">ID</th>
                   <th className="border-b border-border px-3 py-3 font-medium">SC ID</th>
-                  <th className="border-b border-border px-3 py-3 font-medium">
-                    Tanggal Dibuat
-                  </th>
-                  <th className="border-b border-border px-3 py-3 font-medium text-right">
-                    Aksi
-                  </th>
+                  <th className="border-b border-border px-3 py-3 font-medium">Tanggal Dibuat</th>
+                  <th className="border-b border-border px-3 py-3 font-medium text-right">Aksi</th>
                 </tr>
               </thead>
               <tbody>
@@ -282,17 +269,13 @@ function PlantPage() {
           </div>
         </section>
 
-        <AlertDialog
-          open={!!deletingItem}
-          onOpenChange={(o) => !o && setDeletingItem(null)}
-        >
+        <AlertDialog open={!!deletingItem} onOpenChange={(o) => !o && setDeletingItem(null)}>
           <AlertDialogContent className="rounded-xl border border-border-surface bg-surface-sidebar p-0 sm:max-w-md overflow-hidden text-foreground">
             <AlertDialogHeader className="px-6 pb-2 pt-6">
               <AlertDialogTitle className="text-xl font-bold">Hapus SC</AlertDialogTitle>
               <AlertDialogDescription className="text-sm text-muted-foreground mt-2">
-                Apakah kamu yakin untuk menghapus SC{" "}
-                <strong>{deletingItem?.sc_id}</strong>? Tindakan ini tidak dapat
-                dibatalkan.
+                Apakah kamu yakin untuk menghapus SC <strong>{deletingItem?.sc_id}</strong>?
+                Tindakan ini tidak dapat dibatalkan.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter className="bg-card-elevated px-6 py-4 flex flex-row justify-end gap-3 border-t border-border-surface">

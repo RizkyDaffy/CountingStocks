@@ -44,7 +44,7 @@ export const Route = createFileRoute("/backup")({
   component: BcpPage,
 });
 
-//    Wizard steps                          
+//    Wizard steps
 type Step = "parts" | "sheets" | "rows";
 
 function BcpPage() {
@@ -111,7 +111,8 @@ function BcpPage() {
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Hubungkan part yang belum terimplementasi sistem scanner / automasi ke Google Sheet.
-            Data stok di &quot;Lihat Stock&quot; akan otomatis diperbarui setiap kali data di Google Sheet diisi.
+            Data stok di &quot;Lihat Stock&quot; akan otomatis diperbarui setiap kali data di Google
+            Sheet diisi.
           </p>
         </div>
 
@@ -122,10 +123,13 @@ function BcpPage() {
             <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold">Operation successful!</p>
               <p className="text-xs text-foreground/90 mt-0.5">
-                Part <span className="font-semibold text-emerald-400">&quot;{successNotice.partName}&quot;</span> sekarang
-                terkoneksi dan mendengarkan data dari tab{" "}
-                <span className="font-semibold">&quot;{successNotice.sheetTitle}&quot;</span> pada baris{" "}
-                <span className="font-semibold">&quot;{successNotice.rowKey}&quot;</span>.
+                Part{" "}
+                <span className="font-semibold text-emerald-400">
+                  &quot;{successNotice.partName}&quot;
+                </span>{" "}
+                sekarang terkoneksi dan mendengarkan data dari tab{" "}
+                <span className="font-semibold">&quot;{successNotice.sheetTitle}&quot;</span> pada
+                baris <span className="font-semibold">&quot;{successNotice.rowKey}&quot;</span>.
               </p>
             </div>
             <button
@@ -157,11 +161,7 @@ function BcpPage() {
         <div className="mt-2">
           {step === "parts" && <StepParts onSelect={handleSelectPart} />}
           {step === "sheets" && selectedPart && (
-            <StepSheets
-              part={selectedPart}
-              onSelect={handleSelectSheet}
-              onBack={() => reset()}
-            />
+            <StepSheets part={selectedPart} onSelect={handleSelectSheet} onBack={() => reset()} />
           )}
           {step === "rows" && selectedPart && selectedSheet && (
             <StepRows
@@ -183,7 +183,7 @@ function BcpPage() {
   );
 }
 
-//    Breadcrumb                            
+//    Breadcrumb
 
 function Breadcrumb({
   step,
@@ -235,7 +235,7 @@ function Breadcrumb({
   );
 }
 
-//    Step 1: Select Part                  
+//    Step 1: Select Part
 
 function StepParts({ onSelect }: { onSelect: (p: BcpPart) => void }) {
   const [search, setSearch] = useState("");
@@ -319,7 +319,7 @@ function StepParts({ onSelect }: { onSelect: (p: BcpPart) => void }) {
   );
 }
 
-//    Step 2: Select Sheet Tab            
+//    Step 2: Select Sheet Tab
 
 function StepSheets({
   part,
@@ -393,9 +393,7 @@ function StepSheets({
                   <p className="text-sm font-semibold text-foreground group-hover:text-[#C05C30]">
                     {s.sheetTitle}
                   </p>
-                  <p className="text-xs font-mono text-muted-foreground">
-                    Sheet ID: {s.sheetId}
-                  </p>
+                  <p className="text-xs font-mono text-muted-foreground">Sheet ID: {s.sheetId}</p>
                 </div>
               </div>
               <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0" />
@@ -407,7 +405,7 @@ function StepSheets({
   );
 }
 
-//    Step 3: Match Row in Sheet            
+//    Step 3: Match Row in Sheet
 
 function normalise(s: string) {
   return s.trim().toUpperCase().replace(/\s+/g, " ");
@@ -521,7 +519,8 @@ function StepRows({
               <span className="text-[#C05C30]">{sheet.sheetTitle}</span>
             </h2>
             <p className="text-xs text-muted-foreground">
-              Koneksikan target: <span className="font-semibold text-foreground">{part.part_name}</span>
+              Koneksikan target:{" "}
+              <span className="font-semibold text-foreground">{part.part_name}</span>
             </p>
           </div>
         </div>
@@ -585,7 +584,9 @@ function StepRows({
         </div>
       ) : filtered.length === 0 ? (
         <div className="py-10 text-center text-sm text-muted-foreground">
-          {search ? "Tidak ada baris yang sesuai pencarian." : "Data sheet kosong atau tidak ditemukan baris part."}
+          {search
+            ? "Tidak ada baris yang sesuai pencarian."
+            : "Data sheet kosong atau tidak ditemukan baris part."}
         </div>
       ) : (
         <ul className="space-y-2.5 max-h-[460px] overflow-y-auto pr-1">
@@ -638,7 +639,7 @@ function StepRows({
   );
 }
 
-//    Existing Links Table                  
+//    Existing Links Table
 
 function ExistingLinks() {
   const { data: links = [], isLoading, refetch } = useBcpLinks();
@@ -702,7 +703,8 @@ function ExistingLinks() {
         </div>
       ) : links.length === 0 ? (
         <div className="py-8 text-center text-sm text-muted-foreground">
-          Belum ada part yang terkoneksi ke Google Sheet. Pilih part pada wizard di atas untuk memulai.
+          Belum ada part yang terkoneksi ke Google Sheet. Pilih part pada wizard di atas untuk
+          memulai.
         </div>
       ) : (
         <div className="space-y-2.5">
@@ -712,9 +714,7 @@ function ExistingLinks() {
               className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-border-surface bg-surface-elevated px-4 py-3.5"
             >
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-foreground">
-                  {link.part_name}
-                </p>
+                <p className="truncate text-sm font-semibold text-foreground">{link.part_name}</p>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5 flex-wrap">
                   <span className="font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md">
                     {link.sheet_title}

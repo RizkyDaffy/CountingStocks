@@ -1,5 +1,6 @@
 # Docker build cache — never copy these into the image
 node_modules
+**/node_modules
 dist
 dist-ssr
 .output
@@ -9,8 +10,13 @@ dist-ssr
 .wrangler
 .git
 .gitignore
+.iris-tmp
+brain
 *.log
 npm-debug.log*
+
+# Unrelated services (not part of this image; google-sheet carries ~330MB node_modules)
+microservices/google-sheet
 
 # Secrets — never bake into image layers
 .env

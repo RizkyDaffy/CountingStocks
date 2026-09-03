@@ -194,7 +194,7 @@ function ScanPage() {
 
       await scanner.start(
         { facingMode: "environment" },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         {
           fps: 25,
           qrbox: { width: 300, height: 300 },

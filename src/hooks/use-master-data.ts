@@ -98,8 +98,7 @@ export const ScApi = {
   useDelete: () => {
     const qc = useQueryClient();
     return useMutation({
-      mutationFn: (id: string) =>
-        fetchApi<{ success: true }>(`/sc/${id}`, { method: "DELETE" }),
+      mutationFn: (id: string) => fetchApi<{ success: true }>(`/sc/${id}`, { method: "DELETE" }),
       onSuccess: () => qc.invalidateQueries({ queryKey: ["sc"] }),
     });
   },
@@ -124,11 +123,7 @@ export const FactoryApi = {
   useCreate: () => {
     const qc = useQueryClient();
     return useMutation({
-      mutationFn: (data: {
-        factory_name: string;
-        factory_code?: string;
-        factory_sc?: string;
-      }) =>
+      mutationFn: (data: { factory_name: string; factory_code?: string; factory_sc?: string }) =>
         fetchApi<FactoryItem>("/factories", {
           method: "POST",
           body: JSON.stringify(data),

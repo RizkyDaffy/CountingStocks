@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchApi } from "@/lib/api";
 
-//    Types                                
+//    Types
 
 export type BcpLink = {
   id: number;
@@ -27,7 +27,7 @@ export type SheetTab = {
   sheetId: number;
 };
 
-//    Hooks                                
+//    Hooks
 
 export function useBcpLinks() {
   return useQuery({
@@ -40,8 +40,7 @@ export function useBcpLinks() {
 export function useBcpParts(search = "") {
   return useQuery({
     queryKey: ["bcp-parts", search],
-    queryFn: () =>
-      fetchApi<BcpPart[]>(`/bcp/parts?search=${encodeURIComponent(search)}`),
+    queryFn: () => fetchApi<BcpPart[]>(`/bcp/parts?search=${encodeURIComponent(search)}`),
     staleTime: 30_000,
   });
 }
@@ -57,14 +56,13 @@ export function useBcpSheets() {
 export function useBcpSheetRows(sheetKey: string | null | undefined) {
   return useQuery({
     queryKey: ["bcp-sheet-rows", sheetKey],
-    queryFn: () =>
-      fetchApi<string[][]>(`/bcp/sheets/${encodeURIComponent(sheetKey!)}/rows`),
+    queryFn: () => fetchApi<string[][]>(`/bcp/sheets/${encodeURIComponent(sheetKey!)}/rows`),
     enabled: Boolean(sheetKey),
     staleTime: 30_000,
   });
 }
 
-//    Mutations                            
+//    Mutations
 
 type SaveLinkPayload = {
   partId: number;
@@ -93,8 +91,7 @@ export function useSaveBcpLink() {
 export function useDeleteBcpLink() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (id: number) =>
-      fetchApi<{ message: string }>(`/bcp/${id}`, { method: "DELETE" }),
+    mutationFn: (id: number) => fetchApi<{ message: string }>(`/bcp/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["bcp-links"] });
       qc.invalidateQueries({ queryKey: ["stock"] });

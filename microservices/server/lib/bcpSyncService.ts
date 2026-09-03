@@ -124,20 +124,22 @@ export async function syncOnce(): Promise<void> {
               total > oldStock ? "up" : total < oldStock ? "down" : "none";
             const percentage = uv > 0 ? parseFloat(((total / uv) * 100).toFixed(2)) : 0;
 
-            await pool.query(
-              `UPDATE stock
+            await pool
+              .query(
+                `UPDATE stock
                SET current_stock = ?, units = ?, trend = ?, percentage = ?, updated_at = NOW()
                WHERE id = ?`,
-              [total, total, trend, percentage, sRow.id],
-            ).catch(async () => {
-              // Fallback if 'units' column does not exist in stock table
-              await pool.query(
-                `UPDATE stock
+                [total, total, trend, percentage, sRow.id],
+              )
+              .catch(async () => {
+                // Fallback if 'units' column does not exist in stock table
+                await pool.query(
+                  `UPDATE stock
                  SET current_stock = ?, trend = ?, percentage = ?, updated_at = NOW()
                  WHERE id = ?`,
-                [total, trend, percentage, sRow.id],
-              );
-            });
+                  [total, trend, percentage, sRow.id],
+                );
+              });
 
             if (sRow.batch_id) {
               await syncStockAnalyticsOnScan(
@@ -157,26 +159,26 @@ export async function syncOnce(): Promise<void> {
             const uv = Number(mpRows[0]?.qty_per_pallet) || 100;
             const percentage = uv > 0 ? parseFloat(((total / uv) * 100).toFixed(2)) : 0;
 
-            await pool.query<ResultSetHeader>(
-              `INSERT INTO stock (batch_id, qr_id, part_name, factory, unit_value, current_stock, units, trend, percentage)
+            await pool
+              .query<ResultSetHeader>(
+                `INSERT INTO stock (batch_id, qr_id, part_name, factory, unit_value, current_stock, units, trend, percentage)
                VALUES (?, ?, ?, ?, ?, ?, ?, 'up', ?)
                ON DUPLICATE KEY UPDATE current_stock = VALUES(current_stock), units = VALUES(units), percentage = VALUES(percentage), updated_at = NOW()`,
-              [bcpBatchId, bcpQrId, link.part_name, factory, uv, total, total, percentage],
-            ).catch(async () => {
-              // Fallback without units column
-              await pool.query<ResultSetHeader>(
-                `INSERT INTO stock (batch_id, qr_id, part_name, factory, unit_value, current_stock, trend, percentage)
+                [bcpBatchId, bcpQrId, link.part_name, factory, uv, total, total, percentage],
+              )
+              .catch(async () => {
+                // Fallback without units column
+                await pool.query<ResultSetHeader>(
+                  `INSERT INTO stock (batch_id, qr_id, part_name, factory, unit_value, current_stock, trend, percentage)
                  VALUES (?, ?, ?, ?, ?, ?, 'up', ?)
                  ON DUPLICATE KEY UPDATE current_stock = VALUES(current_stock), percentage = VALUES(percentage), updated_at = NOW()`,
-                [bcpBatchId, bcpQrId, link.part_name, factory, uv, total, percentage],
-              );
-            });
+                  [bcpBatchId, bcpQrId, link.part_name, factory, uv, total, percentage],
+                );
+              });
 
-            await syncStockAnalyticsOnScan(
-              link.part_name,
-              "Google Sheet BCP",
-              bcpBatchId,
-            ).catch(() => {});
+            await syncStockAnalyticsOnScan(link.part_name, "Google Sheet BCP", bcpBatchId).catch(
+              () => {},
+            );
           }
         } catch (err) {
           console.error(`[BCP-SYNC] Error updating stock for ${link.part_name}:`, err);

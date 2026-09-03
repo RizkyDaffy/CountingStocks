@@ -52,8 +52,7 @@ export function useUpdateMesin() {
 export function useToggleMesinStatus() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (uuid: string) =>
-      fetchApi<Mesin>(`/mesin/${uuid}/toggle`, { method: "PATCH" }),
+    mutationFn: (uuid: string) => fetchApi<Mesin>(`/mesin/${uuid}/toggle`, { method: "PATCH" }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["mesin"] }),
   });
 }

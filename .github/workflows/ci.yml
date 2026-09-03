@@ -16,11 +16,6 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: "Provide IRIS SDK (file: dependency)"
-        run: |
-          git clone --depth 1 --sparse https://github.com/RizkyDaffy/IRIS.git .iris-tmp
-          git -C .iris-tmp sparse-checkout set SDK/JS
-
       - name: Install dependencies
         run: npm ci --ignore-scripts
 
@@ -31,11 +26,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: "Provide IRIS SDK (file: dependency)"
-        run: |
-          git clone --depth 1 --sparse https://github.com/RizkyDaffy/IRIS.git .iris-tmp
-          git -C .iris-tmp sparse-checkout set SDK/JS
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3

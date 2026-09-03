@@ -48,8 +48,7 @@ router.get("/", async (_req, res) => {
 router.get("/parts", async (req, res) => {
   try {
     const search = (req.query.search as string) || "";
-    let query =
-      "SELECT id, part_name, part_number, machine, factory_origin FROM master_parts";
+    let query = "SELECT id, part_name, part_number, machine, factory_origin FROM master_parts";
     const params: string[] = [];
     if (search) {
       query += " WHERE part_name LIKE ? OR part_number LIKE ?";
@@ -125,10 +124,9 @@ router.post("/", async (req, res) => {
       [partId, partName, sheetId, sheetTitle, rowKey],
     );
 
-    const [rows] = await pool.query<RowDataPacket[]>(
-      "SELECT * FROM bcp_links WHERE part_id = ?",
-      [partId],
-    );
+    const [rows] = await pool.query<RowDataPacket[]>("SELECT * FROM bcp_links WHERE part_id = ?", [
+      partId,
+    ]);
 
     // Trigger immediate sync in the background so stock is calculated right away
     syncOnce().catch((e) => console.error("[BCP] immediate sync error:", e));
@@ -155,10 +153,9 @@ router.post("/sync", async (_req, res) => {
 // DELETE /api/bcp/:id — remove link
 router.delete("/:id", async (req, res) => {
   try {
-    const [result] = await pool.query<ResultSetHeader>(
-      "DELETE FROM bcp_links WHERE id = ?",
-      [req.params.id],
-    );
+    const [result] = await pool.query<ResultSetHeader>("DELETE FROM bcp_links WHERE id = ?", [
+      req.params.id,
+    ]);
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ success: false, error: "Link BCP tidak ditemukan." });

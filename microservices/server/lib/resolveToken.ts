@@ -2,7 +2,7 @@ import pool from "../db.js";
 import type { RowDataPacket } from "mysql2";
 
 export async function resolveShortToken(token: string): Promise<string> {
-  let [rows] = await pool.query<RowDataPacket[]>(
+  const [rows] = await pool.query<RowDataPacket[]>(
     "SELECT 1 FROM qr_codes WHERE short_token = ? LIMIT 1",
     [token],
   );

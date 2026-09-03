@@ -1,4 +1,9 @@
-import { Injectable, InternalServerErrorException, Logger, ServiceUnavailableException } from "@nestjs/common";
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  ServiceUnavailableException,
+} from "@nestjs/common";
 import { google, sheets_v4 } from "googleapis";
 import { AppConfigService } from "../../config/config.service";
 import { AnalyzeResponseDto } from "./dto/analyze-response.dto";

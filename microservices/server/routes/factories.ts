@@ -41,10 +41,9 @@ router.post("/", async (req, res) => {
       "INSERT INTO factories (uuid, factory_name, factory_code, factory_sc) VALUES (?, ?, ?, ?)",
       [factoryUuid, factory_name.trim(), (factory_code || "").trim(), (factory_sc || "").trim()],
     );
-    const [newRow] = await pool.query<RowDataPacket[]>(
-      "SELECT * FROM factories WHERE uuid = ?",
-      [factoryUuid],
-    );
+    const [newRow] = await pool.query<RowDataPacket[]>("SELECT * FROM factories WHERE uuid = ?", [
+      factoryUuid,
+    ]);
     res.status(201).json({ success: true, data: newRow[0] });
   } catch (err: unknown) {
     res.status(500).json({ success: false, error: (err as Error).message });

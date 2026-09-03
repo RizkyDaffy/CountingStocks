@@ -33,7 +33,6 @@ export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): 
     // Throw so the caller's .catch() / onError handler is notified
     throw new Error("Session expired. Redirecting to login.");
   }
-  
 
   const data = await response.json();
 

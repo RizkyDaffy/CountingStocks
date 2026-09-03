@@ -41,7 +41,9 @@ export class GoogleSheetsController {
     description: "Override the configured GOOGLE_SPREADSHEET_ID (direct fetch, not cached)",
   })
   @ApiOkResponse({ type: AnalyzeResponseDto })
-  @ApiServiceUnavailableResponse({ description: "Service account missing/misconfigured or Google API error" })
+  @ApiServiceUnavailableResponse({
+    description: "Service account missing/misconfigured or Google API error",
+  })
   async analyze(@Query("spreadsheetId") spreadsheetId?: string): Promise<AnalyzeResponseDto> {
     if (spreadsheetId) {
       return this.googleSheetsService.analyzeSpreadsheet(spreadsheetId);
@@ -59,7 +61,9 @@ export class GoogleSheetsController {
   @ApiParam({ name: "key", description: "Sheet title or numeric sheetId/gid" })
   @ApiOkResponse({ type: SheetSnapshotResponseDto })
   @ApiNotFoundResponse({ description: "No worksheet matches the given key" })
-  @ApiServiceUnavailableResponse({ description: "Service account missing/misconfigured or Google API error" })
+  @ApiServiceUnavailableResponse({
+    description: "Service account missing/misconfigured or Google API error",
+  })
   async getSheet(@Param("key") key: string): Promise<SheetSnapshotResponseDto> {
     const snapshot = await this.cache.getSnapshot();
     const sheet = this.cache.findSheet(snapshot, key);
