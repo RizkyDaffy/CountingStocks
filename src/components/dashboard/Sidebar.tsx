@@ -23,6 +23,7 @@ import {
   ShieldAlert,
   Link2,
   Activity,
+  ArrowUpCircle,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -120,6 +121,12 @@ export const MANAGEMENT_ITEMS: NavItem[] = [
     description: "Koneksi Google Sheet untuk Backup Stock",
     to: "/backup",
     icon: ShieldAlert,
+  },
+  {
+    label: "Version & Update",
+    description: "Informasi versi aplikasi & pembaruan",
+    to: "/updates",
+    icon: ArrowUpCircle,
   },
 ];
 
