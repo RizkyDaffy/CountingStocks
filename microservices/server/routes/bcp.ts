@@ -115,17 +115,27 @@ router.post("/", async (req, res) => {
       });
     }
 
+    // machine + part_number are NOT NULL with no default; derive from master_parts
+    const [partRows] = await pool.query<RowDataPacket[]>(
+      "SELECT part_number, machine FROM master_parts WHERE id = ? LIMIT 1",
+      [partId],
+    );
+    const partNumber = String(partRows[0]?.part_number ?? "");
+    const machine = String(partRows[0]?.machine ?? "");
+
     await pool.query<ResultSetHeader>(
-      `INSERT INTO bcp_links (part_id, part_name, spreadsheet_id, sheet_id, sheet_title, row_key)
-       VALUES (?, ?, ?, ?, ?, ?)
+      `INSERT INTO bcp_links (part_id, part_name, spreadsheet_id, sheet_id, sheet_title, row_key, machine, part_number)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
        ON DUPLICATE KEY UPDATE
          part_name      = VALUES(part_name),
          spreadsheet_id = VALUES(spreadsheet_id),
          sheet_id       = VALUES(sheet_id),
          sheet_title    = VALUES(sheet_title),
          row_key        = VALUES(row_key),
+         machine        = VALUES(machine),
+         part_number    = VALUES(part_number),
          updated_at     = NOW()`,
-      [partId, partName, SPREADSHEET_ID, sheetId, sheetTitle, rowKey],
+      [partId, partName, SPREADSHEET_ID, sheetId, sheetTitle, rowKey, machine, partNumber],
     );
 
     const [rows] = await pool.query<RowDataPacket[]>("SELECT * FROM bcp_links WHERE part_id = ?", [

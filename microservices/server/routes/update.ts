@@ -140,7 +140,13 @@ async function spawnUpdater(
     `say "[deploy] Running migration gate..."`,
     `try docker compose ${composeArgs} run --rm --no-deps counting-stock npm run migrate:gate`,
     `say "[deploy] Gate passed. Restarting service..."`,
-    `try docker compose ${composeArgs} up -d --no-build counting-stock gsheet`,
+    // Windows Docker Desktop sometimes races container removal during
+    // stop->rm->recreate ("removal ... already in progress"). Retry clears it.
+    `n=0; until docker compose ${composeArgs} up -d --no-build counting-stock gsheet >> "$LOG" 2>&1; do`,
+    `  n=$((n+1)); say "[deploy] compose up attempt $n failed - retrying in 5s..."`,
+    `  if [ $n -ge 5 ]; then say "[deploy] FAILED: docker compose up -d --no-build counting-stock gsheet"; exit 1; fi`,
+    `  sleep 5`,
+    `done`,
     `say "[deploy] Update selesai. Aplikasi menyala kembali..."`,
   ].join("\n");
 

@@ -8,6 +8,12 @@ Versioning follows [Semantic Versioning](https://semver.org/):
 - MINOR - new feature, reversible migration
 - PATCH - bug fix, no migration
 
+## [1.5.2] - 2026-09-04
+
+### Fixed
+- `/backup` "Connect now": 500 "Field 'machine' doesn't have a default value" — the link INSERT also omitted `machine`/`part_number` (NOT NULL, no default; XAMPP lenient mode hid it). Values now derived from `master_parts`; existing rows backfilled.
+- Web self-update: `compose up` could fail with "removal of container ... is already in progress" (Windows Docker Desktop stop->rm->recreate race), leaving the app down. Updater now retries `up -d` up to 5 times (5s apart) before reporting failure.
+
 ## [1.5.1] - 2026-09-04
 
 ### Fixed
