@@ -139,6 +139,15 @@ async function spawnUpdater(
     `try docker pull '${targetImage}'`,
     `say "[deploy] Pulling gsheet image..."`,
     `try docker pull '${gsheetImage}'`,
+    // Resolve the gsheet key mount to an ABSOLUTE host path. Compose resolves
+    // relative bind paths against --project-directory (/project = updater
+    // container path, not a host path) which creates a bogus directory mount
+    // and crashes the gsheet service with EISDIR.
+    `KEY_PATH=$(grep -E '^GSHEET_KEY_PATH=' /project/.env 2>/dev/null | tail -1 | cut -d= -f2- | tr -d '\\r')`,
+    `[ -z "$KEY_PATH" ] && KEY_PATH='./brain/sugity-a4887dfc9882.json'`,
+    `case "$KEY_PATH" in /*|*:*) ;; *) KEY_PATH='${hostProjectDir}'"/$\{KEY_PATH#./}";; esac`,
+    `export GSHEET_KEY_PATH="$KEY_PATH"`,
+    `say "[deploy] Using key mount: $GSHEET_KEY_PATH"`,
     `say "[deploy] Running migration gate..."`,
     // Sanity: the compose file must be visible through the mount before gate.
     `[ -f /project/docker-compose.yml ] || { say "[deploy] FAILED: /project/docker-compose.yml not found - HOST_PROJECT_DIR wrong"; exit 1; }`,

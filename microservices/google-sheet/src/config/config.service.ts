@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { existsSync } from "node:fs";
+import { existsSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 
 function requireEnv(key: string, fallback?: string): string {
@@ -23,7 +23,9 @@ function resolveKeyPath(raw: string): string | undefined {
     resolve("..", "..", raw),
   ];
   for (const c of candidates) {
-    if (existsSync(c)) return c;
+    // Must be a regular file: a bind-mount failure (e.g. bad host path) shows
+    // up as a directory at the mount point and makes reads fail with EISDIR.
+    if (existsSync(c) && statSync(c).isFile()) return c;
   }
   return undefined;
 }

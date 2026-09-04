@@ -68,13 +68,30 @@ export function extractStock(rawValues: string[][], rowKey: string): number | nu
   return null; // Row not found in sheet
 }
 
+// Gsheet reachability state: log the DOWN/UP transition once instead of
+// spamming every poll cycle. While down, syncs are skipped; because the sync
+// is state-based (reads latest snapshot values), the first successful poll
+// after recovery applies all missed sheet edits automatically.
+let gsheetDown = false;
+
 async function fetchSheet(sheetKey: string): Promise<SheetSnapshot | null> {
   try {
     const url = `${GSHEET_BASE}/api/v1/sheets/${encodeURIComponent(sheetKey)}`;
     const res = await fetch(url, { signal: AbortSignal.timeout(15_000) });
-    if (!res.ok) return null;
-    return (await res.json()) as SheetSnapshot;
-  } catch {
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const snapshot = (await res.json()) as SheetSnapshot;
+    if (gsheetDown) {
+      gsheetDown = false;
+      console.log("[BCP-SYNC] gsheet service reachable again - resuming sync");
+    }
+    return snapshot;
+  } catch (err) {
+    if (!gsheetDown) {
+      gsheetDown = true;
+      console.warn(
+        `[BCP-SYNC] gsheet service unreachable (${err instanceof Error ? err.message : err}) - sync paused, will retry`,
+      );
+    }
     return null;
   }
 }

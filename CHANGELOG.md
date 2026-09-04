@@ -8,6 +8,15 @@ Versioning follows [Semantic Versioning](https://semver.org/):
 - MINOR - new feature, reversible migration
 - PATCH - bug fix, no migration
 
+## [1.6.1] - 2026-09-04
+
+### Fixed
+- gsheet service crash-looped with `EISDIR` after a web-triggered update: the updater ran compose with `--project-directory /project`, so the relative key bind (`./brain/...`) resolved to a container path the host daemon auto-created as a directory. The updater now resolves `GSHEET_KEY_PATH` to an absolute host path before invoking compose, and the key path resolver only accepts regular files (a directory no longer passes as a valid key).
+
+### Changed
+- Resilience - gsheet: Google API failures now back off exponentially (poll interval x2 per failure, capped at 5 min) instead of hammering every 5s; a stale snapshot keeps serving during outages; recovery is logged once and the latest sheet state is captured on the first success, so edits made while unreachable are applied automatically.
+- Resilience - backend BCP sync: gsheet downtime pauses sync with a single transition log (no per-poll spam) and resumes automatically. Backend downtime does not affect the gsheet service (independent container); on backend restart the initial sync after 5s consumes the latest state - state-based sync means no data loss in either direction.
+
 ## [1.6.0] - 2026-09-04
 
 ### Changed
