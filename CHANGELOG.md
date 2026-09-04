@@ -8,6 +8,11 @@ Versioning follows [Semantic Versioning](https://semver.org/):
 - MINOR - new feature, reversible migration
 - PATCH - bug fix, no migration
 
+## [1.5.1] - 2026-09-04
+
+### Fixed
+- `/backup` "Connect now": 500 "Field 'spreadsheet_id' doesn't have a default value" — the INSERT omitted the NOT NULL column (XAMPP's lenient mode hid it; MariaDB strict mode rejects it). The API now stores the spreadsheet ID on every link (also on update), and existing rows were backfilled.
+
 ## [1.5.0] - 2026-09-04
 
 ### Added

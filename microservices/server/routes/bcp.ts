@@ -19,6 +19,9 @@ import { syncOnce } from "../lib/bcpSyncService.js";
 const router = Router();
 
 const GSHEET_BASE = process.env.GSHEET_SERVICE_URL || "http://localhost:4002";
+// Same spreadsheet the gsheet microservice reads; stored per link row.
+const SPREADSHEET_ID =
+  process.env.GOOGLE_SPREADSHEET_ID || "18A9v3_zzugc0obDRY1BfvZliMsp4ceI0M6cFJRWpv9A";
 
 async function proxyGsheet(path: string): Promise<{ ok: boolean; data: unknown }> {
   try {
@@ -113,15 +116,16 @@ router.post("/", async (req, res) => {
     }
 
     await pool.query<ResultSetHeader>(
-      `INSERT INTO bcp_links (part_id, part_name, sheet_id, sheet_title, row_key)
-       VALUES (?, ?, ?, ?, ?)
+      `INSERT INTO bcp_links (part_id, part_name, spreadsheet_id, sheet_id, sheet_title, row_key)
+       VALUES (?, ?, ?, ?, ?, ?)
        ON DUPLICATE KEY UPDATE
-         part_name   = VALUES(part_name),
-         sheet_id    = VALUES(sheet_id),
-         sheet_title = VALUES(sheet_title),
-         row_key     = VALUES(row_key),
-         updated_at  = NOW()`,
-      [partId, partName, sheetId, sheetTitle, rowKey],
+         part_name      = VALUES(part_name),
+         spreadsheet_id = VALUES(spreadsheet_id),
+         sheet_id       = VALUES(sheet_id),
+         sheet_title    = VALUES(sheet_title),
+         row_key        = VALUES(row_key),
+         updated_at     = NOW()`,
+      [partId, partName, SPREADSHEET_ID, sheetId, sheetTitle, rowKey],
     );
 
     const [rows] = await pool.query<RowDataPacket[]>("SELECT * FROM bcp_links WHERE part_id = ?", [

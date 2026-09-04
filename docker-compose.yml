@@ -83,6 +83,7 @@ services:
       HOST_PROJECT_DIR: ${HOST_PROJECT_DIR:-}
       # Google Sheet microservice (BCP /backup) - service name inside the compose network.
       GSHEET_SERVICE_URL: ${GSHEET_SERVICE_URL:-http://gsheet:4002}
+      GOOGLE_SPREADSHEET_ID: ${GOOGLE_SPREADSHEET_ID:-18A9v3_zzugc0obDRY1BfvZliMsp4ceI0M6cFJRWpv9A}
     networks:
       - app-network
       - nginx-public
