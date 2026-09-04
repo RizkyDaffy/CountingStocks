@@ -45,7 +45,7 @@ services:
       TRUST_PROXY: "1"
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:3000}
       GOOGLE_SPREADSHEET_ID: ${GOOGLE_SPREADSHEET_ID:-18A9v3_zzugc0obDRY1BfvZliMsp4ceI0M6cFJRWpv9A}
-      SHEETS_POLL_INTERVAL_MS: ${SHEETS_POLL_INTERVAL_MS:-10000}
+      SHEETS_POLL_INTERVAL_MS: ${SHEETS_POLL_INTERVAL_MS:-5000}
       GOOGLE_SERVICE_ACCOUNT_KEY_PATH: /secrets/gsheet-key.json
     volumes:
       # Google service account key (never baked into the image).
@@ -83,6 +83,8 @@ services:
       HOST_PROJECT_DIR: ${HOST_PROJECT_DIR:-}
       # Google Sheet microservice (BCP /backup) - service name inside the compose network.
       GSHEET_SERVICE_URL: ${GSHEET_SERVICE_URL:-http://gsheet:4002}
+      # BCP stock sync poll (reads from the gsheet in-memory cache; 5s = seconds-level freshness)
+      BCP_SYNC_INTERVAL_MS: ${BCP_SYNC_INTERVAL_MS:-5000}
       GOOGLE_SPREADSHEET_ID: ${GOOGLE_SPREADSHEET_ID:-18A9v3_zzugc0obDRY1BfvZliMsp4ceI0M6cFJRWpv9A}
     networks:
       - app-network

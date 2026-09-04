@@ -13,7 +13,15 @@ import type { RowDataPacket, ResultSetHeader } from "mysql2";
 import { syncStockAnalyticsOnScan } from "./stockAnalyticsService.js";
 
 const GSHEET_BASE = process.env.GSHEET_SERVICE_URL || "http://localhost:4002";
-const POLL_MS = 60_000;
+// Default 5s: the gsheet service serves from its in-memory cache, so this is
+// cheap. Total sheet-edit -> UI latency stays within seconds.
+const POLL_MS = Math.max(5_000, Number(process.env.BCP_SYNC_INTERVAL_MS) || 5_000);
+
+// stock.percentage is decimal(5,2) - max 999.99. Clamp so a tiny unit_value
+// (e.g. 1) can never make the UPDATE fail with "Out of range".
+function clampPercentage(pct: number): number {
+  return Math.min(999.99, Math.max(0, pct));
+}
 
 type BcpLink = {
   id: number;
@@ -122,24 +130,15 @@ export async function syncOnce(): Promise<void> {
             const uv = Number(sRow.unit_value ?? 0);
             const trend: "up" | "down" | "none" =
               total > oldStock ? "up" : total < oldStock ? "down" : "none";
-            const percentage = uv > 0 ? parseFloat(((total / uv) * 100).toFixed(2)) : 0;
+            const percentage = uv > 0 ? clampPercentage((total / uv) * 100) : 0;
 
-            await pool
-              .query(
-                `UPDATE stock
-               SET current_stock = ?, units = ?, trend = ?, percentage = ?, updated_at = NOW()
+            // NOTE: stock table has no 'units' column - do not write it.
+            await pool.query(
+              `UPDATE stock
+               SET current_stock = ?, trend = ?, percentage = ?, updated_at = NOW()
                WHERE id = ?`,
-                [total, total, trend, percentage, sRow.id],
-              )
-              .catch(async () => {
-                // Fallback if 'units' column does not exist in stock table
-                await pool.query(
-                  `UPDATE stock
-                 SET current_stock = ?, trend = ?, percentage = ?, updated_at = NOW()
-                 WHERE id = ?`,
-                  [total, trend, percentage, sRow.id],
-                );
-              });
+              [total, trend, percentage, sRow.id],
+            );
 
             if (sRow.batch_id) {
               await syncStockAnalyticsOnScan(
@@ -157,24 +156,14 @@ export async function syncOnce(): Promise<void> {
 
             const factory = mpRows[0]?.factory_origin || "Factory 2";
             const uv = Number(mpRows[0]?.qty_per_pallet) || 100;
-            const percentage = uv > 0 ? parseFloat(((total / uv) * 100).toFixed(2)) : 0;
+            const percentage = uv > 0 ? clampPercentage((total / uv) * 100) : 0;
 
-            await pool
-              .query<ResultSetHeader>(
-                `INSERT INTO stock (batch_id, qr_id, part_name, factory, unit_value, current_stock, units, trend, percentage)
-               VALUES (?, ?, ?, ?, ?, ?, ?, 'up', ?)
-               ON DUPLICATE KEY UPDATE current_stock = VALUES(current_stock), units = VALUES(units), percentage = VALUES(percentage), updated_at = NOW()`,
-                [bcpBatchId, bcpQrId, link.part_name, factory, uv, total, total, percentage],
-              )
-              .catch(async () => {
-                // Fallback without units column
-                await pool.query<ResultSetHeader>(
-                  `INSERT INTO stock (batch_id, qr_id, part_name, factory, unit_value, current_stock, trend, percentage)
-                 VALUES (?, ?, ?, ?, ?, ?, 'up', ?)
-                 ON DUPLICATE KEY UPDATE current_stock = VALUES(current_stock), percentage = VALUES(percentage), updated_at = NOW()`,
-                  [bcpBatchId, bcpQrId, link.part_name, factory, uv, total, percentage],
-                );
-              });
+            await pool.query<ResultSetHeader>(
+              `INSERT INTO stock (batch_id, qr_id, part_name, factory, unit_value, current_stock, trend, percentage)
+               VALUES (?, ?, ?, ?, ?, ?, 'up', ?)
+               ON DUPLICATE KEY UPDATE current_stock = VALUES(current_stock), percentage = VALUES(percentage), updated_at = NOW()`,
+              [bcpBatchId, bcpQrId, link.part_name, factory, uv, total, percentage],
+            );
 
             await syncStockAnalyticsOnScan(link.part_name, "Google Sheet BCP", bcpBatchId).catch(
               () => {},

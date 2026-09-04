@@ -81,9 +81,19 @@ async function latestReleaseTag(): Promise<string> {
   return raw[0].tag_name;
 }
 
-// Discover the compose project + host working dir of THIS container, so the
-// updater targets the exact same stack (project name mismatch = name conflicts).
+// Discover the compose project + host working dir of THIS container.
+// Priority: HOST_PROJECT_DIR env (set from the host .env via compose - always
+// the real host path) over container labels. Labels get poisoned: the updater
+// recreates this container with `--project-directory /project`, so the stored
+// working_dir label becomes "/project", which is not a valid host path.
 async function composeContext(): Promise<{ project: string; workingDir: string }> {
+  const dir = process.env.HOST_PROJECT_DIR?.trim();
+  if (dir) {
+    return {
+      project: process.env.COMPOSE_PROJECT_NAME?.trim() || "control-stock",
+      workingDir: dir,
+    };
+  }
   try {
     const cid = process.env.HOSTNAME || "";
     if (!cid) throw new Error("HOSTNAME kosong");
@@ -98,16 +108,8 @@ async function composeContext(): Promise<{ project: string; workingDir: string }
     if (!project || !workingDir) throw new Error("label compose tidak ada");
     return { project, workingDir };
   } catch {
-    // Fallback for non-compose runs (e.g. bare docker run)
-    const dir = process.env.HOST_PROJECT_DIR?.trim();
-    if (dir) {
-      return {
-        project: process.env.COMPOSE_PROJECT_NAME?.trim() || "control-stock",
-        workingDir: dir,
-      };
-    }
     throw new Error(
-      "Tidak bisa menemukan project compose. Jalankan aplikasi lewat deploy.ps1 / docker compose.",
+      "Tidak bisa menemukan project compose. Set HOST_PROJECT_DIR di .env server lalu jalankan deploy.ps1.",
     );
   }
 }
@@ -138,7 +140,14 @@ async function spawnUpdater(
     `say "[deploy] Pulling gsheet image..."`,
     `try docker pull '${gsheetImage}'`,
     `say "[deploy] Running migration gate..."`,
-    `try docker compose ${composeArgs} run --rm --no-deps counting-stock npm run migrate:gate`,
+    // Sanity: the compose file must be visible through the mount before gate.
+    `[ -f /project/docker-compose.yml ] || { say "[deploy] FAILED: /project/docker-compose.yml not found - HOST_PROJECT_DIR wrong"; exit 1; }`,
+    // compose run --rm can hit the same Windows removal race as up -d; retry.
+    `n=0; until docker compose ${composeArgs} run --rm --no-deps counting-stock npm run migrate:gate >> "$LOG" 2>&1; do`,
+    `  n=$((n+1)); say "[deploy] migration gate attempt $n failed - retrying in 5s..."`,
+    `  if [ $n -ge 3 ]; then say "[deploy] FAILED: docker compose run --rm --no-deps counting-stock npm run migrate:gate"; exit 1; fi`,
+    `  sleep 5`,
+    `done`,
     `say "[deploy] Gate passed. Restarting service..."`,
     // Windows Docker Desktop sometimes races container removal during
     // stop->rm->recreate ("removal ... already in progress"). Retry clears it.

@@ -8,6 +8,16 @@ Versioning follows [Semantic Versioning](https://semver.org/):
 - MINOR - new feature, reversible migration
 - PATCH - bug fix, no migration
 
+## [1.6.0] - 2026-09-04
+
+### Changed
+- BCP stock sync is now near-real-time: poll interval 60s -> 5s (configurable via `BCP_SYNC_INTERVAL_MS`), gsheet cache poll 10s -> 5s (`SHEETS_POLL_INTERVAL_MS`), /view-stock UI refresh 8s -> 5s. Sheet edits now reflect on the UI within ~15 seconds.
+
+### Fixed
+- BCP sync silently failed for parts with small unit_value (e.g. "DEV:TEST"): percentage = total/unit_value x 100 overflowed `stock.percentage` decimal(5,2) ("Out of range" error in logs) so `current_stock` never updated. Percentage is now clamped to 999.99.
+- BCP sync wrote to a non-existent `units` column on every update (masked by a fallback query that then failed on percentage). The dead column reference and the double-query fallback are removed.
+- Web self-update failed at the migration gate with "/project/docker-compose.yml: no such file": the updater recreated the app container with `--project-directory /project`, poisoning the compose `working_dir` label that the next update relied on. Discovery now prefers the `HOST_PROJECT_DIR` env (from the host .env, always the real path). The updater also validates the compose file mount and retries the gate (3x) and `compose up` (5x) against the Windows container-removal race.
+
 ## [1.5.2] - 2026-09-04
 
 ### Fixed

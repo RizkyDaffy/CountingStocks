@@ -29,7 +29,7 @@ export function useStock(search = "", factory = "All") {
       fetchApi<StockRow[]>(
         `/qr/stock?search=${encodeURIComponent(search)}&factory=${encodeURIComponent(factory)}`,
       ),
-    refetchInterval: 8000, // refresh every 8s
+    refetchInterval: 5000, // refresh every 5s
   });
 }
 
@@ -37,7 +37,7 @@ export function useStockStats() {
   return useQuery({
     queryKey: ["stock-stats"],
     queryFn: () => fetchApi<StockStats>("/qr/stock/stats"),
-    refetchInterval: 8000,
+    refetchInterval: 5000,
   });
 }
 
