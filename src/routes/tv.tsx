@@ -401,7 +401,7 @@ function TvPage() {
                 className="text-xs font-semibold"
                 style={{ color: "var(--color-text-secondary)" }}
               >
-                {fac} · Shift {shift}
+                {data?.factoryLabel || fac} · Shift {shift}
               </span>
             )}
             <div className="tv-live-badge">

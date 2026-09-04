@@ -1,5 +1,6 @@
 import { Router, type Request, type Response, type NextFunction } from "express";
 import http from "node:http";
+import fs from "node:fs";
 import { APP_VERSION } from "../version.js";
 
 const router = Router();
@@ -8,7 +9,8 @@ const REGISTRY = process.env.REGISTRY?.trim() || "ghcr.io/rizkydaffy/counting-st
 const GITHUB_REPO = process.env.GITHUB_REPO?.trim() || "RizkyDaffy/CountingStocks";
 const SWAPPER_IMAGE = "docker:cli";
 const DOCKER_SOCKET = "/var/run/docker.sock";
-const IN_FLIGHT_TIMEOUT_MS = 15 * 60_000;
+const UPDATE_LOG = "/app/logs/update.log";
+const IN_FLIGHT_TIMEOUT_MS = 10 * 60_000;
 
 let inFlight: { targetImage: string; startedAt: number } | null = null;
 
@@ -79,22 +81,62 @@ async function latestReleaseTag(): Promise<string> {
   return raw[0].tag_name;
 }
 
-async function spawnSwapper(targetImage: string): Promise<string> {
+// Discover the compose project + host working dir of THIS container, so the
+// updater targets the exact same stack (project name mismatch = name conflicts).
+async function composeContext(): Promise<{ project: string; workingDir: string }> {
+  try {
+    const cid = process.env.HOSTNAME || "";
+    if (!cid) throw new Error("HOSTNAME kosong");
+    const res = await dockerRequest("GET", `/containers/${cid}/json`);
+    if (res.status >= 400) {
+      throw new Error(`Docker API ${res.status}`);
+    }
+    const labels = (JSON.parse(res.text) as { Config?: { Labels?: Record<string, string> } }).Config
+      ?.Labels;
+    const project = labels?.["com.docker.compose.project"];
+    const workingDir = labels?.["com.docker.compose.project.working_dir"];
+    if (!project || !workingDir) throw new Error("label compose tidak ada");
+    return { project, workingDir };
+  } catch {
+    // Fallback for non-compose runs (e.g. bare docker run)
+    const dir = process.env.HOST_PROJECT_DIR?.trim();
+    if (dir) {
+      return {
+        project: process.env.COMPOSE_PROJECT_NAME?.trim() || "control-stock",
+        workingDir: dir,
+      };
+    }
+    throw new Error(
+      "Tidak bisa menemukan project compose. Jalankan aplikasi lewat deploy.ps1 / docker compose.",
+    );
+  }
+}
+
+async function spawnUpdater(
+  targetImage: string,
+  project: string,
+  workingDir: string,
+): Promise<string> {
   const containerName = `counting-stock-updater-${Date.now()}`;
-  const projectDir = process.env.HOST_PROJECT_DIR?.trim() as string;
+  // Windows hosts: label paths use backslashes; bind sources want forward slashes.
+  const hostProjectDir = workingDir.replace(/\\/g, "/");
 
   await dockerPullImage("docker", "cli");
 
+  const composeArgs = `-p '${project}' --project-directory /project -f /project/docker-compose.yml`;
   const script = [
     "set -e",
-    `echo "[updater] pulling ${targetImage}"`,
-    `docker pull '${targetImage}'`,
-    "cd /project",
-    'echo "[updater] running migration gate"',
-    `IMAGE='${targetImage}' docker compose run --rm --no-deps counting-stock npm run migrate:gate`,
-    'echo "[updater] gate passed, recreating service"',
-    `IMAGE='${targetImage}' docker compose up -d --no-build counting-stock`,
-    'echo "[updater] done"',
+    "LOG=/logs/update.log",
+    `echo "[deploy] Image: ${targetImage}" > "$LOG"`,
+    `say() { echo "$1" | tee -a "$LOG"; }`,
+    `try() { "$@" >> "$LOG" 2>&1 || { say "[deploy] FAILED: $*"; exit 1; } }`,
+    `say "[deploy] Pulling image..."`,
+    `try docker pull '${targetImage}'`,
+    `say "[deploy] Running migration gate..."`,
+    `try docker compose ${composeArgs} run --rm --no-deps counting-stock npm run migrate:gate`,
+    `say "[deploy] Gate passed. Restarting service..."`,
+    `try docker compose ${composeArgs} up -d --no-build counting-stock`,
+    `say "[deploy] Update selesai. Aplikasi menyala kembali..."`,
   ].join("\n");
 
   const create = await dockerRequest("POST", `/containers/create?name=${containerName}`, {
@@ -103,7 +145,11 @@ async function spawnSwapper(targetImage: string): Promise<string> {
     Labels: { "counting-stock.updater": "true" },
     HostConfig: {
       AutoRemove: true,
-      Binds: [`${DOCKER_SOCKET}:${DOCKER_SOCKET}`, `${projectDir}:/project:ro`],
+      Binds: [
+        `${DOCKER_SOCKET}:${DOCKER_SOCKET}`,
+        `${hostProjectDir}:/project:ro`,
+        `${project}_app-logs:/logs`,
+      ],
     },
   });
   if (create.status >= 400) {
@@ -120,24 +166,35 @@ async function spawnSwapper(targetImage: string): Promise<string> {
   return containerName;
 }
 
-router.post("/run", requireAdmin, async (_req, res) => {
+router.get("/logs", requireAdmin, async (_req, res) => {
   try {
-    const projectDir = process.env.HOST_PROJECT_DIR?.trim();
-    if (!projectDir) {
-      return res.status(400).json({
-        success: false,
-        error:
-          "HOST_PROJECT_DIR belum diatur. Tambahkan path project di server ke .env lalu jalankan deploy.ps1.",
-      });
+    let lines: string[] = [];
+    if (fs.existsSync(UPDATE_LOG)) {
+      lines = fs
+        .readFileSync(UPDATE_LOG, "utf8")
+        .split("\n")
+        .filter((l) => l !== "");
     }
+    res.json({ success: true, data: { lines, version: APP_VERSION } });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err instanceof Error ? err.message : "Gagal membaca log pembaruan",
+    });
+  }
+});
 
-    if (inFlight && Date.now() - inFlight.startedAt < IN_FLIGHT_TIMEOUT_MS) {
+router.post("/run", requireAdmin, async (req, res) => {
+  try {
+    const force = req.query.force === "1";
+    if (inFlight && Date.now() - inFlight.startedAt < IN_FLIGHT_TIMEOUT_MS && !force) {
       return res.status(409).json({
         success: false,
         error: `Pembaruan ke ${inFlight.targetImage} sedang berjalan. Tunggu sampai selesai.`,
       });
     }
 
+    const { project, workingDir } = await composeContext();
     const tag = await latestReleaseTag();
     const version = tag.replace(/^v/, "");
     const targetImage = `${REGISTRY}:${tag}`;
@@ -152,7 +209,7 @@ router.post("/run", requireAdmin, async (_req, res) => {
     inFlight = { targetImage, startedAt: Date.now() };
 
     try {
-      await spawnSwapper(targetImage);
+      await spawnUpdater(targetImage, project, workingDir);
     } catch (err) {
       inFlight = null;
       throw err;

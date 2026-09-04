@@ -8,6 +8,16 @@ Versioning follows [Semantic Versioning](https://semver.org/):
 - MINOR - new feature, reversible migration
 - PATCH - bug fix, no migration
 
+## [1.4.0] - 2026-09-04
+
+### Added
+- `/updates`: live deploy console — streams the updater's output (pull, migration gate, restart) CLI-style while an update runs, with auto-scroll and a running/idle indicator.
+- `GET /api/update/logs`: returns the current update log lines + running version (admin).
+
+### Fixed
+- `/tv?fac=...`: machine cards were empty when the factory param is a name ("Factory 2") — the API only matched factory uuids. The `/api/stock-analytics/tv` endpoint now resolves the param against `factories` (uuid OR name, case-insensitive) and filters mesin/stock/analytics with both keys. TV header shows the resolved factory name.
+- Web self-update ("Update Sekarang") never completed: the updater container ran compose from `/project`, deriving project name `project` instead of `control-stock`, causing a `container_name` conflict and silent failure. The updater now self-discovers the compose project + host working dir from the app container's own labels (`com.docker.compose.project`), passes `-p` explicitly, and shares its output through the `app-logs` volume. Retry after failure no longer blocks on the in-flight guard (`?force=1`).
+
 ## [1.3.0] - 2026-09-03
 
 ### Fixed

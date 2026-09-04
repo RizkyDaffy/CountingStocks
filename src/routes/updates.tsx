@@ -8,7 +8,9 @@ import {
   Tag,
   ExternalLink,
   Clock,
+  Terminal,
 } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { format } from "date-fns";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
@@ -105,11 +107,47 @@ function ReleaseCard({
   );
 }
 
+function UpdateConsole({ lines, active }: { lines: string[]; active: boolean }) {
+  const ref = useRef<HTMLPreElement>(null);
+
+  useEffect(() => {
+    if (ref.current) ref.current.scrollTop = ref.current.scrollHeight;
+  }, [lines]);
+
+  return (
+    <div className="overflow-hidden rounded-xl border border-border-surface bg-[#0c0c0f]">
+      <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-2">
+        <div className="flex items-center gap-2 text-xs font-semibold text-zinc-400">
+          <Terminal className="h-3.5 w-3.5" />
+          deploy@server — live output
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span
+            className={`inline-block h-2 w-2 rounded-full ${
+              active ? "animate-pulse bg-emerald-500" : "bg-zinc-600"
+            }`}
+          />
+          <span className="text-[10px] font-medium uppercase tracking-wide text-zinc-500">
+            {active ? "running" : "idle"}
+          </span>
+        </div>
+      </div>
+      <pre
+        ref={ref}
+        className="max-h-72 overflow-y-auto whitespace-pre-wrap break-words px-4 py-3 font-mono text-xs leading-relaxed text-zinc-300"
+      >
+        {lines.length > 0 ? lines.join("\n") : "menunggu output..."}
+      </pre>
+    </div>
+  );
+}
+
 function UpdatesPage() {
   const { data: info, isLoading, dataUpdatedAt, refetch, isRefetching } = useUpdateCheck();
-  const { phase, message, trigger } = useSelfUpdate();
+  const { phase, message, lines, trigger } = useSelfUpdate();
   const updateBusy =
     phase === "starting" || phase === "updating" || phase === "restarting" || phase === "done";
+  const showConsole = phase !== "idle" && phase !== "error" && (lines.length > 0 || updateBusy);
 
   const updateAvailable = isUpdateAvailable(info);
   const lastCheck =
@@ -215,6 +253,9 @@ function UpdatesPage() {
             </div>
           </div>
         )}
+
+        {/* Live deploy console */}
+        {showConsole ? <UpdateConsole lines={lines} active={phase !== "done"} /> : null}
 
         {/* Newer versions */}
         {newer.length > 0 && (

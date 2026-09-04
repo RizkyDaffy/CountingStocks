@@ -52,11 +52,30 @@ router.get("/tv", async (req, res) => {
     const factory = (req.query.factory as string) || "";
     const shift = (req.query.shift as string) || "";
 
+    // Resolve the factory param: accept uuid OR factory name.
+    // Data is historically mixed: mesin.machine_factory stores uuids,
+    // stock.factory stores names, stock_analytics.factory has both.
+    let factoryKeys: string[] = [];
+    let factoryLabel = factory;
+    if (factory) {
+      const [fRows] = await pool.query<RowDataPacket[]>(
+        "SELECT uuid, factory_name FROM factories WHERE uuid = ? OR LOWER(factory_name) = LOWER(?) LIMIT 1",
+        [factory, factory],
+      );
+      if (fRows[0]) {
+        factoryKeys = [String(fRows[0].uuid), String(fRows[0].factory_name)];
+        factoryLabel = String(fRows[0].factory_name);
+      } else {
+        factoryKeys = [factory];
+      }
+    }
+    const factoryPh = factoryKeys.map(() => "?").join(", ");
+
     let mesinQuery = "SELECT * FROM mesin WHERE 1=1";
     const mesinParams: string[] = [];
     if (factory) {
-      mesinQuery += " AND machine_factory = ?";
-      mesinParams.push(factory);
+      mesinQuery += ` AND machine_factory IN (${factoryPh})`;
+      mesinParams.push(...factoryKeys);
     }
     mesinQuery += " ORDER BY machine_code ASC";
     const [mesinRows] = await pool.query<RowDataPacket[]>(mesinQuery, mesinParams);
@@ -64,8 +83,8 @@ router.get("/tv", async (req, res) => {
     let analyticsQuery = "SELECT * FROM stock_analytics WHERE 1=1";
     const analyticsParams: string[] = [];
     if (factory) {
-      analyticsQuery += " AND factory = ?";
-      analyticsParams.push(factory);
+      analyticsQuery += ` AND factory IN (${factoryPh})`;
+      analyticsParams.push(...factoryKeys);
     }
     const [analyticsRows] = await pool.query<RowDataPacket[]>(analyticsQuery, analyticsParams);
 
@@ -87,9 +106,9 @@ router.get("/tv", async (req, res) => {
     const partsParams: string[] = [];
     if (factory) {
       partsQuery += ` AND UPPER(mp.machine) IN (
-        SELECT UPPER(machine_code) FROM mesin WHERE machine_factory = ?
+        SELECT UPPER(machine_code) FROM mesin WHERE machine_factory IN (${factoryPh})
       )`;
-      partsParams.push(factory);
+      partsParams.push(...factoryKeys);
     }
     partsQuery += " ORDER BY mp.machine, mp.part_name";
     const [partRows] = await pool.query<RowDataPacket[]>(partsQuery, partsParams);
@@ -109,8 +128,8 @@ router.get("/tv", async (req, res) => {
     let stockQuery = "SELECT * FROM stock WHERE 1=1";
     const stockParams: string[] = [];
     if (factory) {
-      stockQuery += " AND factory = ?";
-      stockParams.push(factory);
+      stockQuery += ` AND factory IN (${factoryPh})`;
+      stockParams.push(...factoryKeys);
     }
     stockQuery += " ORDER BY part_name ASC";
     const [stockRows] = await pool.query<RowDataPacket[]>(stockQuery, stockParams);
@@ -210,6 +229,7 @@ router.get("/tv", async (req, res) => {
       success: true,
       data: {
         factory,
+        factoryLabel,
         shift,
         counts: { critical, warning, safe },
         gaugePercent,
