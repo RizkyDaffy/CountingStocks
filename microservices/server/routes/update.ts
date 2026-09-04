@@ -123,19 +123,24 @@ async function spawnUpdater(
 
   await dockerPullImage("docker", "cli");
 
+  const tag = targetImage.split(":").pop() as string;
+  const gsheetImage = `${REGISTRY}-gsheet:${tag}`;
   const composeArgs = `-p '${project}' --project-directory /project -f /project/docker-compose.yml`;
   const script = [
     "set -e",
     "LOG=/logs/update.log",
+    `export IMAGE='${targetImage}' GSHEET_IMAGE='${gsheetImage}'`,
     `echo "[deploy] Image: ${targetImage}" > "$LOG"`,
     `say() { echo "$1" | tee -a "$LOG"; }`,
     `try() { "$@" >> "$LOG" 2>&1 || { say "[deploy] FAILED: $*"; exit 1; } }`,
     `say "[deploy] Pulling image..."`,
     `try docker pull '${targetImage}'`,
+    `say "[deploy] Pulling gsheet image..."`,
+    `try docker pull '${gsheetImage}'`,
     `say "[deploy] Running migration gate..."`,
     `try docker compose ${composeArgs} run --rm --no-deps counting-stock npm run migrate:gate`,
     `say "[deploy] Gate passed. Restarting service..."`,
-    `try docker compose ${composeArgs} up -d --no-build counting-stock`,
+    `try docker compose ${composeArgs} up -d --no-build counting-stock gsheet`,
     `say "[deploy] Update selesai. Aplikasi menyala kembali..."`,
   ].join("\n");
 

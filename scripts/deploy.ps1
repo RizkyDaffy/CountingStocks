@@ -60,6 +60,16 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
+$gsheetImage = "${registry}-gsheet:${Tag}"
+Write-Host "[deploy] Pulling gsheet image..."
+docker pull $gsheetImage
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[deploy] WARNING: gsheet image pull failed: $gsheetImage" -ForegroundColor Yellow
+    Write-Host "[deploy]          The /backup (BCP) service will keep its current image." -ForegroundColor Yellow
+} else {
+    $env:GSHEET_IMAGE = $gsheetImage
+}
+
 $env:IMAGE = $Image
 
 # ---------- Migration gate ----------
@@ -87,7 +97,7 @@ if ($gateExit -ne 0) {
 # ---------- Restart ----------
 Write-Host "[deploy] Restarting service..."
 # --no-build: never build locally, always use the pulled registry image.
-docker compose up -d --no-build counting-stock
+docker compose up -d --no-build counting-stock gsheet
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[deploy] Failed to start. Roll back: .\scripts\deploy.ps1 -Tag <previous-tag>" -ForegroundColor Red
     exit 1

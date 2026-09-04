@@ -9,6 +9,16 @@ function generateUuid(): string {
   return crypto.randomUUID();
 }
 
+// factory_sc is enum('SC1','SC2') - anything else (incl. empty) is truncated
+// in strict SQL mode. Coerce to a valid value.
+function normalizeSc(value: unknown): "SC1" | "SC2" {
+  return String(value || "")
+    .trim()
+    .toUpperCase() === "SC2"
+    ? "SC2"
+    : "SC1";
+}
+
 router.get("/", async (_req, res) => {
   try {
     const [rows] = await pool.query<RowDataPacket[]>(
@@ -39,7 +49,7 @@ router.post("/", async (req, res) => {
 
     const [result] = await pool.query<ResultSetHeader>(
       "INSERT INTO factories (uuid, factory_name, factory_code, factory_sc) VALUES (?, ?, ?, ?)",
-      [factoryUuid, factory_name.trim(), (factory_code || "").trim(), (factory_sc || "").trim()],
+      [factoryUuid, factory_name.trim(), (factory_code || "").trim(), normalizeSc(factory_sc)],
     );
     const [newRow] = await pool.query<RowDataPacket[]>("SELECT * FROM factories WHERE uuid = ?", [
       factoryUuid,
@@ -60,7 +70,7 @@ router.put("/:uuid", async (req, res) => {
 
     await pool.query(
       "UPDATE factories SET factory_name = ?, factory_code = ?, factory_sc = ? WHERE uuid = ?",
-      [factory_name.trim(), (factory_code || "").trim(), (factory_sc || "").trim(), uuid],
+      [factory_name.trim(), (factory_code || "").trim(), normalizeSc(factory_sc), uuid],
     );
     const [updatedRow] = await pool.query<RowDataPacket[]>(
       "SELECT * FROM factories WHERE uuid = ?",

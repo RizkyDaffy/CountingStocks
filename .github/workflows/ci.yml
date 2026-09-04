@@ -38,3 +38,11 @@ jobs:
           push: false
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Build gsheet image (no push)
+        uses: docker/build-push-action@v6
+        with:
+          context: microservices/google-sheet
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

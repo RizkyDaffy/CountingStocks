@@ -30,6 +30,29 @@ services:
       retries: 10
       start_period: 30s
 
+  # Google Sheets microservice (BCP /backup). Internal only - the main API
+  # proxies it via /api/bcp, so no host port is published.
+  gsheet:
+    image: ${GSHEET_IMAGE:-counting-stock-gsheet}
+    build:
+      context: ./microservices/google-sheet
+      dockerfile: Dockerfile
+    container_name: counting-stock-gsheet
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 4002
+      TRUST_PROXY: "1"
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:3000}
+      GOOGLE_SPREADSHEET_ID: ${GOOGLE_SPREADSHEET_ID:-}
+      SHEETS_POLL_INTERVAL_MS: ${SHEETS_POLL_INTERVAL_MS:-10000}
+      GOOGLE_SERVICE_ACCOUNT_KEY_PATH: /secrets/gsheet-key.json
+    volumes:
+      # Google service account key (never baked into the image).
+      - ${GSHEET_KEY_PATH:-./brain/sugity-a4887dfc9882.json}:/secrets/gsheet-key.json:ro
+    networks:
+      - app-network
+
   counting-stock:
     build:
       context: .
@@ -58,6 +81,8 @@ services:
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://cstock.sugity.co.id}
       # Self-update ("Update Sekarang"): absolute path of this project on the Docker host.
       HOST_PROJECT_DIR: ${HOST_PROJECT_DIR:-}
+      # Google Sheet microservice (BCP /backup) - service name inside the compose network.
+      GSHEET_SERVICE_URL: ${GSHEET_SERVICE_URL:-http://gsheet:4002}
     networks:
       - app-network
       - nginx-public

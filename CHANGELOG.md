@@ -8,6 +8,16 @@ Versioning follows [Semantic Versioning](https://semver.org/):
 - MINOR - new feature, reversible migration
 - PATCH - bug fix, no migration
 
+## [1.5.0] - 2026-09-04
+
+### Added
+- Google Sheets microservice (`microservices/google-sheet`) now ships in the stack as compose service `gsheet` (internal network, port 4002). Release workflow builds and publishes a second image `counting-stock-gsheet:<tag>`; deploy.ps1 and the web self-updater pull and restart both services. The Google service account key is mounted at runtime (never baked into images).
+
+### Fixed
+- `/factory` create/change: "Data truncated for column 'factory_sc'" — the column is `enum('SC1','SC2')` and the route inserted raw values (often empty). The API now coerces any input to SC1/SC2 (default SC1).
+- `/qr-privileges` showed "Tidak ada station ditemukan": the privileges routes were gated by an internal-key middleware that returns 503 when `INTERNAL_API_KEY` is unset. The gate is removed — endpoints remain protected by the global JWT auth.
+- BCP sync + `/api/bcp` proxy: `GSHEET_SERVICE_URL` now defaults to `http://gsheet:4002` (service DNS) instead of localhost, which never worked inside the app container.
+
 ## [1.4.0] - 2026-09-04
 
 ### Added

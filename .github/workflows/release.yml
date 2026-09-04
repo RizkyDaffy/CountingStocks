@@ -42,6 +42,17 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Build and push gsheet image
+        uses: docker/build-push-action@v6
+        with:
+          context: microservices/google-sheet
+          push: true
+          tags: |
+            ${{ env.IMAGE }}-gsheet:${{ github.ref_name }}
+            ${{ env.IMAGE }}-gsheet:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
       - name: Extract changelog section for this tag
         id: changelog
         run: |

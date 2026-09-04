@@ -1,11 +1,12 @@
 import { Router } from "express";
 import pool from "../db.js";
-import { requireInternalKey } from "../middleware/internalKeyMiddleware.js";
 import type { RowDataPacket, ResultSetHeader } from "mysql2";
 
 const router = Router();
 
-router.use(requireInternalKey);
+// All /api/privileges endpoints are protected by the global JWT auth
+// (requireAuth in index.ts). The old internal-key gate rejected every
+// request with 503 when INTERNAL_API_KEY was unset, breaking /qr-privileges.
 
 router.get("/stations", async (_req, res) => {
   try {
