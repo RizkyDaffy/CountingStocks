@@ -6,7 +6,7 @@
 #   .\scripts\deploy.ps1 -Tag v1.0.0      # rollback to an older version (gate protects the DB)
 #
 # IMPORTANT: run this ON THE DOCKER HOST (the server), from the project root.
-# The compose file uses external networks (henkaten-be_app-network, nginx-public)
+# The compose file uses external networks (counting-networks, nginx-public)
 # and an external MySQL. These only exist on the host that runs the stack.
 #
 # Sequence: pre-flight checks -> pull image -> migration gate -> restart -> health check.
@@ -39,7 +39,7 @@ if (-not (Test-Path ".env")) {
     }
 }
 
-foreach ($net in @("henkaten-be_app-network", "nginx-public")) {
+foreach ($net in @("counting-networks", "nginx-public")) {
     docker network inspect $net *> $null
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[deploy] FATAL: Docker network '$net' does not exist on this machine." -ForegroundColor Red

@@ -8,6 +8,11 @@ Versioning follows [Semantic Versioning](https://semver.org/):
 - MINOR - new feature, reversible migration
 - PATCH - bug fix, no migration
 
+## [1.6.2] - 2026-09-04
+
+### Changed
+- Renamed the stack network from `henkaten-be_app-network` to `counting-networks` (compose, deploy.ps1 pre-flight). Migration on the host: new network created, containers recreated via compose (DNS aliases intact), old network removed.
+
 ## [1.6.1] - 2026-09-04
 
 ### Fixed

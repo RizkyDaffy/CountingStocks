@@ -108,4 +108,4 @@ networks:
     name: nginx-public
   app-network:
     external: true
-    name: henkaten-be_app-network
+    name: counting-networks
